@@ -1,0 +1,6 @@
+node_modules
+server/mydatabase.db
+server/venv/
+server/node_modules/
+server/apiEndpoints/mattmdjaga/__pycache__/
+server/apiEndpoints/mattmdjaga/myprojectenv/lib/python3.12/site-packages/torch/lib/libtorch_cpu.dylib

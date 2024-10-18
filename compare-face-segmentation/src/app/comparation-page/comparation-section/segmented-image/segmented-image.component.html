@@ -1,0 +1,9 @@
+<div *ngIf="image.processedData" class="container" (scroll)="onScroll()">
+  <canvas
+    #segmentCanvas
+    (mouseenter)="onMouseMove($event)"
+    (mousemove)="onMouseMove($event)"
+    (mouseleave)="onMouseLeave()"
+    class="segment-canvas"
+  ></canvas>
+</div>

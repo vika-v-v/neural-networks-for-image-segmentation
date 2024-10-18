@@ -1,0 +1,7 @@
+flask
+flask-cors
+transformers
+torch
+pillow
+requests
+numpy

@@ -1,0 +1,22 @@
+<div #targetElement class="container">
+    <div *ngIf="getImageInformation()" class="header">{{ getImageInformation()!.header }}</div>
+    
+    <div *ngIf="getImageInformation()" class="information-container">
+        <div *ngFor="let item of getImageInformation()!.infoArray" class="information-item">
+            {{ item.key }}: {{ item.value }}
+        </div>
+    </div>
+
+    <div *ngIf="getImageInformation()" class="information-container">
+        <div *ngFor="let item of getImageInformation()!.labelsWithColors" class="label-item" >
+            <div class="line" [ngClass]="isHighlighted(item.label)">
+                <span class="color-line" [ngStyle]="{'background-color': getOpaqueColor(item.color)}"></span>
+                <div class="line-text">
+                    <div>{{ item.label }}</div>
+                    <div id="score" *ngIf="item.score != null">Score: {{ item.score }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+</div>

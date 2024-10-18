@@ -1,0 +1,18 @@
+/* Ensure the body and html elements have overflow set to auto */
+html, body {
+    overflow: hidden;
+}
+
+::-webkit-scrollbar-track {
+    background: #f6f5f2 !important; /* Track color */
+}
+
+::-webkit-scrollbar-thumb {
+    background: #a6a49f !important; /* Track color */
+}
+
+/* For Firefox */
+html, body {
+    scrollbar-width: thin !important; /* Sets the width of the scrollbar */
+    scrollbar-color: #a6a49f #f6f5f2 !important; /* Sets the color of the scrollbar thumb and track */
+}

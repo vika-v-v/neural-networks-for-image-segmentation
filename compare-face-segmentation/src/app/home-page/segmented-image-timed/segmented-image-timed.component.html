@@ -1,0 +1,12 @@
+<div class="container">
+    <img [src]="originalImageUrl" alt="Original Image" class="original image">
+
+    <ng-container *ngIf="segmentSrc">
+      <img [src]="segmentSrc" alt="Segment" class="segment image">
+      <div class="segment-description">
+          <p>{{segment.nn_name}}</p>
+          <p class="segment-label-name">{{segment.label}}</p>
+        </div>
+    </ng-container>
+
+</div>

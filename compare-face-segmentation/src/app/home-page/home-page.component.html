@@ -1,0 +1,15 @@
+<div class="container">
+    <app-segmented-image-timed class="image" [imageId]="39"></app-segmented-image-timed>
+    <h1 class="header-text">Neural Networks for <span class="image-segmentation-text">Image Segmentation</span></h1>
+    <div class="section">
+        <p class="section-header">What does this webseite do?</p>
+        <p class="section-description">This website demonstrates the API for various neural networks, enabling comparisons of how different neural networks perform in image segmentation tasks.</p>
+    </div>
+    <div class="section">
+        <p class="section-header">Why is it helpful?</p>
+        <p class="section-description">Helps automatic processing, such as comparing parts of different images. This comparison can help choose the best network for tasks like segmenting faces, clothes, or various individuals.</p>
+    </div>
+    <div class="arrow-down" (click)="scrollToComparation.emit()">
+        <img src="../../assets/8666577_chevrons_down_icon.svg" alt="Arrow Down">
+    </div>
+</div>

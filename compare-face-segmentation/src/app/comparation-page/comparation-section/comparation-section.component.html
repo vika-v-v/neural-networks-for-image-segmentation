@@ -1,0 +1,32 @@
+<div class="container">
+  <table [style.--num-columns]="neuralNetworks.length + 1">
+    <thead>
+      <tr>
+        <th class="column-same-width">Original Image</th>
+        <th *ngFor="let network of neuralNetworks" class="column-same-width">
+          {{ network.name }}
+        </th>
+      </tr>
+    </thead>
+    <tbody (scroll)="onScroll()">
+      
+      <ng-container *ngFor="let image of images" >
+        <tr *ngIf="image.visible">
+          <td class="column-same-width original-image">
+            <img
+              [src]="image.image"
+              alt="Original Image"
+              (load)="updateImageHeight(image.img_id, $event)"
+              (mouseenter)="onMouseMove($event, image.img_id, -1)"
+              (mousemove)="onMouseMove($event, image.img_id, -1)"
+              (mouseleave)="onMouseLeave()"
+            />
+          </td>
+          <td *ngFor="let network of neuralNetworks" class="column-same-width image-container">
+              <app-segmented-image [image]="image" [neuralNetwork]="network" [style.height.px]="image.height"></app-segmented-image>
+          </td>
+        </tr>
+      </ng-container>
+    </tbody>
+  </table>
+</div>

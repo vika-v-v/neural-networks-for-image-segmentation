@@ -1,0 +1,21 @@
+<div class="container">
+    <h1>Categories</h1>
+    <div class="categories-holder">
+        <div class="content">
+            <div *ngFor="let category of categories">
+                <button class="category" (click)="toggleActiveCategory(category.id)">
+                    {{ isActiveCategory(category.id) ? '▼' : '►' }} {{ category.name }}
+                </button>
+                <div *ngIf="isActiveCategory(category.id)" class="undercategories">
+                    <button *ngFor="let undercategory of category.undercategories" 
+                            (click)="setSelectedUndercategory(undercategory.id)" 
+                            [class.selected-undercategory]="isSelectedUndercategory(undercategory.id)"
+                            class="undercategory">
+                    {{ undercategory.name }}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+  </div>
+  

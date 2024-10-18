@@ -1,0 +1,85 @@
+@keyframes slideInRight {
+    from {
+        transform: translateX(30%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideInOut {
+    0% {
+        transform: translateX(20%);  /* Start off-screen to the right */
+        opacity: 0;
+    }
+    10% {
+        transform: translateX(0);  /* Finish sliding in */
+        opacity: 1;
+    }
+    90% {
+        transform: translateX(0);  /* Stay in place */
+        opacity: 1;
+    }
+    100% {
+        transform: translateX(-20%);  /* Slide out to the left */
+        opacity: 0;
+    }
+}
+
+@keyframes fadeInOut {
+    0%, 100% {
+        opacity: 0;
+    }
+    10%, 90% {
+        opacity: 1;
+    }
+}
+
+.image {
+    display: block;
+    margin: 0px;
+    padding: 0px;
+    min-height: 100vh;
+    width: auto;
+    position: absolute;
+    right: 0; /* Setting the position to be as right as possible */
+}
+
+.original {
+    z-index: 0;
+    animation: ease-in-out 1s slideInRight;
+}
+
+.segment {
+    z-index: 1;
+    animation: ease-in-out 5s fadeInOut;
+    animation-fill-mode: both;
+}
+
+.segment-description {
+    position: absolute;
+    top: 5vh;
+    left: 55vw;
+    width: fit-content;
+    z-index: 30;
+    color: #3d1908;
+    font-size: 18px;
+    border-left: 2px solid #77300f;
+    padding-left: 20px;
+    animation: slideInOut 5s linear; /* Adjust total duration as needed */
+    animation-fill-mode: both;
+}
+
+.segment-description p {
+    margin: 3px;
+}
+
+.segment-label-name {
+    font-weight: bold;
+}
+
+.container {
+    position: relative;
+}
