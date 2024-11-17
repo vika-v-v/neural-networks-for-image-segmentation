@@ -16,3 +16,9 @@ Prerequisites: you need to habe node.js (https://nodejs.org/en/download/package-
 1) Open this Project in the Terminal.
 2) Run "cd server" to switch to the folder with the backend.
 3) Run "node server.js" to start the js server.
+
+Navigate to python venv (create and install and dependecies), start venv and start the server.
+
+If there is the error with python, reinstall torch:
+pip uninstall torch torchvision torchaudio -y
+pip install torch

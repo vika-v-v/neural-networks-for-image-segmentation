@@ -42,6 +42,7 @@
     margin: 0px;
     padding: 0px;
     min-height: 100vh;
+    max-height: 100vh;
     width: auto;
     position: absolute;
     right: 0; /* Setting the position to be as right as possible */

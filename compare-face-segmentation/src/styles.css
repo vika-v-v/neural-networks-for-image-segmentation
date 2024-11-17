@@ -1,6 +1,8 @@
 /* Ensure the body and html elements have overflow set to auto */
 html, body {
     overflow: hidden;
+    padding: 0;
+    margin: 0;
 }
 
 ::-webkit-scrollbar-track {

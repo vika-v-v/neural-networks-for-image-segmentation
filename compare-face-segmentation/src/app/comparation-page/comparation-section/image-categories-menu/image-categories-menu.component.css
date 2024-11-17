@@ -30,9 +30,27 @@ button {
     font-weight: bold;
 }
 
+.category {
+    position: relative;
+}
+
 .container {
     margin: 50px 1.5vw 10px 1.5vw;
     width: 15vw;
+}
+
+#icons {
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
+    position: absolute;
+    right: 0;
+    bottom: 10px;
+}
+
+img {
+    width: auto;
+    height: 20px;
 }
 
 h1 {
