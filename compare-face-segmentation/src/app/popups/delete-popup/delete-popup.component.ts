@@ -12,7 +12,7 @@ import { deletePopupObserver } from '../popup-controller.class';
   styleUrl: './delete-popup.component.css'
 })
 export class DeletePopupComponent implements deletePopupObserver {
-  category: any;
+  category: any = {name: '', id: 0};
   popupVisible: boolean = true;
 
   showDeleteCategoryPopup(category: any): void {
