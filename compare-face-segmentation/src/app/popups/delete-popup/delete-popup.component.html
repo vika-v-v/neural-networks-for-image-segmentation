@@ -1,9 +1,9 @@
 <div id="container" *ngIf="popupVisible">
-    <p>Are you sure you want to delete the category {{category.name}}?</p>
+    <p>Are you sure you want to delete the category <i>{{category.name}}</i>?</p>
     <div id="buttons">
-        <button id="cancel">Cancel</button>
-        <button id="delete">Delete</button>
+        <button id="cancel" (click)="deleteCategory()">Yes</button>
+        <button id="delete" (click)="hidePopup()">No</button>
     </div>
 </div>
 
-<div id="background" *ngIf="popupVisible"></div>
+<div id="background" *ngIf="popupVisible" (click)="hidePopup()"></div>

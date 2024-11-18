@@ -1,6 +1,9 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 import { ImageService } from '../../../server-communication/image.service';
 import { CommonModule } from '@angular/common';
+import { PopupController } from '../../../popups/popup-controller.service';
+import { CategoryService } from '../../../server-communication/categories.service';
+import { CategoriesObserver, CategoriesObserverService } from './categories-observer.service';
 
 @Component({
   selector: 'app-image-categories-menu',
@@ -11,7 +14,7 @@ import { CommonModule } from '@angular/common';
     CommonModule
   ]
 })
-export class ImageCategoriesMenuComponent {
+export class ImageCategoriesMenuComponent implements CategoriesObserver {
   categories: any = [];
   activeCategoryIds: any[] = ["1"]; // Store active category IDs
 
@@ -19,8 +22,17 @@ export class ImageCategoriesMenuComponent {
 
   @Output() undercategorySelected: EventEmitter<number> = new EventEmitter(); // Emit number ID
 
-  constructor(private imageService: ImageService) {
-    this.imageService.getCategories().subscribe({
+  constructor(private imageService: ImageService, private categoryService: CategoryService, private popupController: PopupController, private categoryObserverService: CategoriesObserverService) {
+    this.updateCategories();
+
+    console.log(this.activeCategoryIds);
+
+    this.undercategorySelected.emit(this.selectedUndercategoryId);
+    categoryObserverService.addCategoriesObserver(this);
+  }
+
+  updateCategories() {
+    this.categoryService.getCategories().subscribe({
       next: (response: any) => {
         this.categories = response.categories;
       },
@@ -28,10 +40,10 @@ export class ImageCategoriesMenuComponent {
         console.error('Error fetching categories:', error);
       }
     });
+  }
 
-    console.log(this.activeCategoryIds);
-
-    this.undercategorySelected.emit(this.selectedUndercategoryId);
+  showDeleteCategoryPopup(category: any) {
+    this.popupController.showDeleteCategoryPopup(category);
   }
 
   toggleActiveCategory(categoryId: number) { // Use ID for comparison

@@ -1,19 +1,22 @@
+import { Injectable } from '@angular/core';
+
 export interface deletePopupObserver {
     showDeleteCategoryPopup(category: any): void;
     // later add show image delete popup
 }
 
+@Injectable({
+  providedIn: 'root', // This makes the service available globally
+})
 export class PopupController {
 
-    deletePopupObservers: deletePopupObserver[] = [];
+    deletePopupObserver!: deletePopupObserver;
 
     addDeletePopupObserver(observer: deletePopupObserver): void {
-        this.deletePopupObservers.push(observer);
+        this.deletePopupObserver = observer;
     }
 
     showDeleteCategoryPopup(category: any): void {
-        this.deletePopupObservers.forEach(observer => {
-            observer.showDeleteCategoryPopup(category);
-        });
+        this.deletePopupObserver.showDeleteCategoryPopup(category);
     }
 }

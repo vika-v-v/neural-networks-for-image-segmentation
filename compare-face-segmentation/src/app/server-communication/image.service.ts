@@ -7,10 +7,6 @@ import { Observable } from 'rxjs';
 })
 export class ImageService {
   constructor(private http: HttpClient) { }
-  
-  getCategories() {
-    return this.http.get('http://localhost:3000/categories');
-  }
 
   getImages(undercategoryId: number): Observable<any> {
     const url = 'http://localhost:3000/imagesByUndercategory/' + undercategoryId;
