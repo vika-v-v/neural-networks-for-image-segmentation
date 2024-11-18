@@ -1,0 +1,16 @@
+<div id="container" *ngIf="popupVisible">
+    <p>Upload your image:</p>
+    <input type="file" id="file" accept="image/*" (change)="onFileChange($event)" />
+    <p>Or paste the direct URL to the image:</p>
+    <input type="text" id="url" />
+    <p>Or generate a random image from thispersondoesntexist</p>
+    <button id="generate" (click)="generateRandomImage()">Generate</button>
+    <p>Select the category:</p>
+    <div>Category selection</div>
+    <div id="buttons">
+        <button id="upload">Upload</button>
+        <button id="cancel">Cancel</button>
+    </div>
+</div>
+
+<div id="background" *ngIf="popupVisible" (click)="hidePopup()"></div>

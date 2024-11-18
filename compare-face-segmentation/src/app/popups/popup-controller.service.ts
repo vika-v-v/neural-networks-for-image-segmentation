@@ -5,12 +5,17 @@ export interface deletePopupObserver {
     // later add show image delete popup
 }
 
+export interface addImagePopupObserver {
+    showAddImagePopup(): void;
+}
+
 @Injectable({
   providedIn: 'root', // This makes the service available globally
 })
 export class PopupController {
 
     deletePopupObserver!: deletePopupObserver;
+    addImagePopupObserver!: addImagePopupObserver;
 
     addDeletePopupObserver(observer: deletePopupObserver): void {
         this.deletePopupObserver = observer;
@@ -18,5 +23,13 @@ export class PopupController {
 
     showDeleteCategoryPopup(category: any): void {
         this.deletePopupObserver.showDeleteCategoryPopup(category);
+    }
+
+    addAddImagePopupObserver(observer: addImagePopupObserver): void {
+        this.addImagePopupObserver = observer;
+    }
+
+    showAddImagePopup(): void {
+        this.addImagePopupObserver.showAddImagePopup();
     }
 }
