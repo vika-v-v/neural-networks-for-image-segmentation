@@ -1,11 +1,16 @@
 import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
 import { ImageInformationPositionService } from './image-information-position.service';
 import { ImageInformationFormat } from './image-information-format.class';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-image-information',
   templateUrl: './image-information.component.html',
-  styleUrl: './image-information.component.css'
+  styleUrl: './image-information.component.css',
+  standalone: true,
+  imports: [
+    CommonModule
+  ]
 })
 export class ImageInformationComponent implements AfterViewInit {
   @ViewChild('targetElement', { static: true }) targetElement!: ElementRef;

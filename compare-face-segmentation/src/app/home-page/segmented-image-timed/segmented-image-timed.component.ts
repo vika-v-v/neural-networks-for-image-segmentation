@@ -3,11 +3,16 @@ import { ImageService } from '../../server-communication/image.service';
 import { ImageInformationPositionService } from '../../comparation-page/image-information/image-information-position.service';
 import { ImageInformationFormat } from '../../comparation-page/image-information/image-information-format.class';
 import { Subscription, interval, switchMap, timer } from 'rxjs';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-segmented-image-timed',
   templateUrl: './segmented-image-timed.component.html',
-  styleUrl: './segmented-image-timed.component.css'
+  styleUrl: './segmented-image-timed.component.css',
+  standalone: true,
+  imports: [
+    CommonModule
+  ]
 })
 export class SegmentedImageTimedComponent {
   @Input() imageId!: number;

@@ -2,11 +2,16 @@ import { Component, Input, ViewChild, ElementRef, AfterViewInit, OnChanges, Simp
 import { ImageService } from '../../../server-communication/image.service';
 import { ImageInformationPositionService } from '../../image-information/image-information-position.service';
 import { ImageInformationFormat } from '../../image-information/image-information-format.class';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-segmented-image',
   templateUrl: './segmented-image.component.html',
-  styleUrls: ['./segmented-image.component.css']
+  styleUrls: ['./segmented-image.component.css'],
+  standalone: true,
+  imports: [
+    CommonModule
+  ]
 })
 export class SegmentedImageComponent implements AfterViewInit, OnChanges {
   @Input() image!: any;

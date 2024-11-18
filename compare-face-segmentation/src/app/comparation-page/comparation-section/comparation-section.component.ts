@@ -4,11 +4,18 @@ import { HttpClient } from '@angular/common/http';
 import { ImageInformationPositionService } from '../image-information/image-information-position.service';
 import { ImageInformationFormat } from '../image-information/image-information-format.class';
 import { NNetworkService } from '../../server-communication/nnetwork.service';
+import { SegmentedImageComponent } from './segmented-image/segmented-image.component';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-comparation-section',
   templateUrl: './comparation-section.component.html',
-  styleUrls: ['./comparation-section.component.css']
+  styleUrls: ['./comparation-section.component.css'],
+  standalone: true,
+  imports: [
+    SegmentedImageComponent,
+    CommonModule
+  ]
 })
 export class ComparationSectionComponent implements OnChanges {
   images: any[] = [];

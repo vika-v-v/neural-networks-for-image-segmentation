@@ -1,10 +1,15 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 import { ImageService } from '../../../server-communication/image.service';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-image-categories-menu',
   templateUrl: './image-categories-menu.component.html',
-  styleUrls: ['./image-categories-menu.component.css'] // Corrected styleUrl to styleUrls
+  styleUrls: ['./image-categories-menu.component.css'],
+  standalone: true,
+  imports: [
+    CommonModule
+  ]
 })
 export class ImageCategoriesMenuComponent {
   categories: any = [];
