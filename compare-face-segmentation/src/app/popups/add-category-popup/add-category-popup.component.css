@@ -97,9 +97,10 @@ p {
     border: 1px dashed rgb(131, 131, 131);
 }
 
-/* In add-category-popup.component.css */
-
 .cdk-drag-preview {
-    
-    
+    display: none;
+}
+  
+#move-icon {
+    cursor: grab;
 }
