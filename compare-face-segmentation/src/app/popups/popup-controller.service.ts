@@ -9,6 +9,10 @@ export interface addImagePopupObserver {
     showAddImagePopup(): void;
 }
 
+export interface addCategoryPopupObserver {
+    showAddCategoryPopup(): void;
+}
+
 @Injectable({
   providedIn: 'root', // This makes the service available globally
 })
@@ -16,6 +20,7 @@ export class PopupController {
 
     deletePopupObserver!: deletePopupObserver;
     addImagePopupObserver!: addImagePopupObserver;
+    addCategoryPopupObserver!: addCategoryPopupObserver;
 
     addDeletePopupObserver(observer: deletePopupObserver): void {
         this.deletePopupObserver = observer;
@@ -30,7 +35,14 @@ export class PopupController {
     }
 
     showAddImagePopup(): void {
-        console.log('show add image popup');
         this.addImagePopupObserver.showAddImagePopup();
+    }
+
+    addAddCategoryPopupObserver(observer: addCategoryPopupObserver): void {
+        this.addCategoryPopupObserver = observer;
+    }
+
+    showAddCategoryPopup(): void {
+        this.addCategoryPopupObserver.showAddCategoryPopup();
     }
 }
