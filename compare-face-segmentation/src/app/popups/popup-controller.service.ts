@@ -30,6 +30,7 @@ export class PopupController {
     }
 
     showAddImagePopup(): void {
+        console.log('show add image popup');
         this.addImagePopupObserver.showAddImagePopup();
     }
 }

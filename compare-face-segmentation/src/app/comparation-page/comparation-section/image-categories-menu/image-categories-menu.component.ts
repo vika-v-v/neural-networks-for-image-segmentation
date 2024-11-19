@@ -67,4 +67,8 @@ export class ImageCategoriesMenuComponent implements CategoriesObserver {
   isSelectedUndercategory(undercategoryId: number): boolean { // Check selected status by ID
     return this.selectedUndercategoryId === undercategoryId;
   }
+
+  triggerAddImagePopup() {
+    this.popupController.showAddImagePopup();
+  }
 }

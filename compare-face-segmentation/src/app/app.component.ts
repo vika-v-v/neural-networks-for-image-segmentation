@@ -3,6 +3,7 @@ import { DeletePopupComponent } from './popups/delete-popup/delete-popup.compone
 import { ImageCategoriesMenuComponent } from './comparation-page/comparation-section/image-categories-menu/image-categories-menu.component';
 import { ComparationPageComponent } from './comparation-page/comparation-page.component';
 import { HomePageComponent } from './home-page/home-page.component';
+import { AddImagePopupComponent } from './popups/add-image-popup/add-image-popup.component';
 
 @Component({
   selector: 'app-root',
@@ -13,7 +14,8 @@ import { HomePageComponent } from './home-page/home-page.component';
     DeletePopupComponent,
     ImageCategoriesMenuComponent,
     ComparationPageComponent,
-    HomePageComponent
+    HomePageComponent,
+    AddImagePopupComponent
   ]
 })
 export class AppComponent implements AfterViewInit {

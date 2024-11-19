@@ -15,3 +15,7 @@ app-comparation-section {
     z-index: 10;
     overflow-x: visible;
 }
+
+app-image-categories-menu {
+    height: 90vh;
+}

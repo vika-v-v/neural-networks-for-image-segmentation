@@ -1,24 +1,30 @@
 <div class="container">
     <h1>Categories</h1>
-    <div class="categories-holder">
-        <div class="content">
-            <div *ngFor="let category of categories" (mouseenter)="category.hovered = true" (mouseleave)="category.hovered = false">
-                <button class="category" >
-                    <div (click)="toggleActiveCategory(category.id)">{{ isActiveCategory(category.id) ? '▼' : '►' }} {{ category.name }}</div>
-                    <div id="icons" *ngIf="category.hovered">
-                        <img src="assets/9026700_pencil_simple_thin_icon.svg" alt="Edit"/>
-                        <img src="assets/9027022_trash_thin_icon.svg" alt="Remove" (click)="showDeleteCategoryPopup(category)"/>
-                    </div>
-                </button>
-                <div *ngIf="isActiveCategory(category.id)" class="undercategories">
-                    <button *ngFor="let undercategory of category.undercategories" 
-                            (click)="setSelectedUndercategory(undercategory.id)" 
-                            [class.selected-undercategory]="isSelectedUndercategory(undercategory.id)"
-                            class="undercategory">
-                    {{ undercategory.name }}
+    <div id="content-holder">
+        <div class="categories-holder">
+            <div class="content">
+                <div *ngFor="let category of categories" (mouseenter)="category.hovered = true" (mouseleave)="category.hovered = false">
+                    <button class="category" >
+                        <div (click)="toggleActiveCategory(category.id)">{{ isActiveCategory(category.id) ? '▼' : '►' }} {{ category.name }}</div>
+                        <div id="icons" *ngIf="category.hovered">
+                            <img src="assets/9026700_pencil_simple_thin_icon.svg" alt="Edit"/>
+                            <img src="assets/9027022_trash_thin_icon.svg" alt="Remove" (click)="showDeleteCategoryPopup(category)"/>
+                        </div>
                     </button>
+                    <div *ngIf="isActiveCategory(category.id)" class="undercategories">
+                        <button *ngFor="let undercategory of category.undercategories" 
+                                (click)="setSelectedUndercategory(undercategory.id)" 
+                                [class.selected-undercategory]="isSelectedUndercategory(undercategory.id)"
+                                class="undercategory">
+                        {{ undercategory.name }}
+                        </button>
+                    </div>
                 </div>
             </div>
+        </div>
+        <div id="actions">
+            <button id="add-category">Add Category</button>
+            <button id="add-image" (click)="triggerAddImagePopup();">Add Image</button>
         </div>
     </div>
   </div>

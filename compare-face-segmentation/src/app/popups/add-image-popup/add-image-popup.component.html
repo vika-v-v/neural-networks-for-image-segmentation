@@ -1,15 +1,31 @@
 <div id="container" *ngIf="popupVisible">
-    <p>Upload your image:</p>
-    <input type="file" id="file" accept="image/*" (change)="onFileChange($event)" />
-    <p>Or paste the direct URL to the image:</p>
-    <input type="text" id="url" />
-    <p>Or generate a random image from thispersondoesntexist</p>
-    <button id="generate" (click)="generateRandomImage()">Generate</button>
-    <p>Select the category:</p>
-    <div>Category selection</div>
-    <div id="buttons">
-        <button id="upload">Upload</button>
-        <button id="cancel">Cancel</button>
+    <div id="image-preview">
+        <img *ngIf="!imageLoaded" src="assets/9026847_image_square_thin_icon.svg" alt="Image preview" class="icon"/>
+    </div>
+    <div id="options">
+        <p class="section-header">Upload your image:</p>
+        <div class="section">
+            <div class="line">
+                <p>Upload file:</p>
+                <input type="file" id="file" accept="image/*"/>
+            </div>
+            <div class="line">
+                <p>Or paste the direct URL:</p>
+                <input type="text" id="url-input" />
+            </div>
+            <div class="line">
+                <p>Or generate from ThisPersonDoesntExist:</p>
+                <button id="generate">Generate</button>
+            </div>
+        </div>
+        <!--p class="section-header">Select the category:</p>
+        <div class="section">
+            <div>Category selection</div>
+        </div>
+        <div id="buttons">
+            <button id="upload">Upload</button>
+            <button id="cancel">Cancel</button>
+        </div-->
     </div>
 </div>
 

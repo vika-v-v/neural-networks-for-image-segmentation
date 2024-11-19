@@ -5,6 +5,19 @@
     background-color:rgba(0, 0, 0, 0.45);
     top: 0;
     left: 0;
+    z-index: 100;
+}
+
+#options {
+    display: flex;
+    justify-content: flex-start;
+    
+    flex-direction: column;
+    border-radius: 10px;
+    box-shadow: 0px 0px 15px 0px rgba(0, 0, 0, 0.3);
+    background-color: #f4f2ee;
+    width: 30vw;
+    padding: 20px 20px;
 }
 
 #container {
@@ -12,23 +25,96 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    background-color: #f6f5f2;
     gap: 20px;
     font-size: 20px;
     z-index: 1000;
     padding: 30px;
-    border-radius: 10px;
-    box-shadow: 0px 0px 15px 0px rgba(0, 0, 0, 0.537);
     margin: 20px;
+
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+}
+
+#image-preview {
+    width: 500px;
+    min-width: 500px;
+    min-height: 500px;
+    border-radius: 10px;
+    padding: 10px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 15px 0px rgba(0, 0, 0, 0.3);
+    background-color: #f4f2ee;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+}
+
+.icon {
+    width: 60px;
+    height: 60px;
+    margin: auto;
 }
 
 p {
     padding: 0;
     margin: 0;
+}
+
+.section {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    border-radius: 5px;
+    padding: 10px;
+    margin: 10px 0 25px;
+    width: calc(100% - 20px);
+    background-color: #dddad8a1;
+}
+
+.section-header {
+    font-size: 18px;
+    text-align: left;
+}
+
+.line {
+    display: flex;
+    flex-direction: row;
+    align-items: left;
+    gap: 5px;
+    justify-content: center;
+}
+
+.line > p {
+    font-size: 17px;
+}
+
+.line > * {
+    flex-basis: 50%;
+    height: fit-content;
+}
+
+.line > input, .line > button {
+    width: 100%;
+    padding: 5px;
+    border-radius: 5px;
+    font-size: 17px;
+    background-color: #f4f2ee;
+    margin-left: 10px;
+}
+
+#url-input {
+    border: 0.5px solid black;
+}
+
+#generate {
+    border: 0.5px solid black;
+    margin-left: 0;
+}
+
+#generate:hover {
+    background-color: #cac9c8;
 }
 
 #buttons {
