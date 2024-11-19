@@ -8,8 +8,8 @@
         <p>Add undercategories:</p>
         <button id="add-undercategory" (click)="addUndercategory()">+ Add Undercategory</button>
         <div id="undercategories" cdkDropList (cdkDropListDropped)="onDrop($event)">
-            <div *ngFor="let undercateg of undercategories" cdkDrag>
-                <div id="undercategory-wrapper">
+            <div *ngFor="let undercateg of undercategories" >
+                <div id="undercategory-wrapper" cdkDrag>
                     <img src="assets/9026874_list_thin_icon.svg" alt="Move" cdkDragHandle class="icon"/>
                     <p *ngIf="!undercateg.currentlyEditing" (click)="editUndercategory(undercateg)">{{ undercateg.name }}</p>
                     <input *ngIf="undercateg.currentlyEditing" 

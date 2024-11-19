@@ -74,17 +74,18 @@ p {
     display: flex;
     flex-direction: column;
     gap: 10px;
+    margin-top: 15px;
 }
 
-#undercategory-wrapper {
+#undercategory-wrapper, #undercategories div[cdkDrag] {
     display: flex;
     flex-direction: row;
-    gap: 20px;
+    gap: 10px;
     justify-content: center;
     align-items: center;
 }
 
-#undercategory-wrapper > input, #undercategory-wrapper > p{
+#undercategory-wrapper > input, #undercategory-wrapper > p, #undercategories div[cdkDrag] > p, #undercategories div[cdkDrag] > input {
     width: 100%;
     font-size: 17px;
     background-color: #ffffff8a;
@@ -93,5 +94,12 @@ p {
 }
 
 #undercategory-wrapper > p {
-    border: 1px dashed black;
+    border: 1px dashed rgb(131, 131, 131);
+}
+
+/* In add-category-popup.component.css */
+
+.cdk-drag-preview {
+    
+    
 }

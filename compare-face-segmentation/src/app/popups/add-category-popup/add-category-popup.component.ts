@@ -9,7 +9,8 @@ import { FormsModule } from '@angular/forms';
   standalone: true,
   imports: [
     CommonModule,
-    FormsModule
+    FormsModule,
+    DragDropModule
   ],
   templateUrl: './add-category-popup.component.html',
   styleUrl: './add-category-popup.component.css'

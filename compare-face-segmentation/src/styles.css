@@ -1,4 +1,3 @@
-/* Ensure the body and html elements have overflow set to auto */
 html, body {
     overflow: hidden;
     padding: 0;
