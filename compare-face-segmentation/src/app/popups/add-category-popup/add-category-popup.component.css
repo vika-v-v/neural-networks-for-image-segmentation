@@ -75,6 +75,8 @@ p {
     flex-direction: column;
     gap: 10px;
     margin-top: 15px;
+    max-height: 30vh;
+    overflow-y: auto;
 }
 
 #undercategory-wrapper, #undercategories div[cdkDrag] {
@@ -95,10 +97,17 @@ p {
 }
 
 #undercategory-wrapper > p, #undercategory-wrapper > input {
-    border: 1px solid rgb(158, 158, 158) !important;
+    border: 1px solid rgb(193, 193, 193) !important;
     background-color: #ffffff8a !important;
 }
 
 .cdk-drag-preview {
     display: none;
+}
+
+#action-buttons {
+    display: flex;
+    flex-direction: row;
+    gap: 15px;
+    margin: 5px 0;
 }
