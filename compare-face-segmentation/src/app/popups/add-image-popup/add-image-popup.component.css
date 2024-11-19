@@ -37,7 +37,7 @@
 }
 
 #image-preview {
-    width: 500px;
+    width: 25vw;
     min-width: 500px;
     min-height: 500px;
     border-radius: 10px;
@@ -65,56 +65,56 @@ p {
 .section {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    justify-content: space-between;
     border-radius: 5px;
-    padding: 10px;
+    
     margin: 10px 0 25px;
     width: calc(100% - 20px);
-    background-color: #dddad8a1;
+    
+    height: 100%;
 }
 
 .section-header {
-    font-size: 18px;
+    font-size: 22px;
     text-align: left;
 }
 
 .line {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     align-items: left;
-    gap: 5px;
+    gap: 15px;
     justify-content: center;
+    background-color: #dddad8a1;
+    padding: 20px;
+    border-radius: 10px;
+    border: 1px dashed black;
 }
 
 .line > p {
-    font-size: 17px;
+    font-size: 20px;
+    width: 100%;
 }
 
 .line > * {
-    flex-basis: 50%;
     height: fit-content;
 }
 
 .line > input, .line > button {
-    width: 100%;
     padding: 5px;
     border-radius: 5px;
-    font-size: 17px;
+    font-size: 20px;
     background-color: #f4f2ee;
-    margin-left: 10px;
-}
-
-#url-input {
     border: 0.5px solid black;
-}
-
-#generate {
-    border: 0.5px solid black;
-    margin-left: 0;
 }
 
 #generate:hover {
-    background-color: #cac9c8;
+    background-color: #e1e1e1;
+}
+
+.between-text {
+    text-align: center;
+    margin: 10px;
 }
 
 #buttons {
@@ -132,4 +132,13 @@ p {
     font-size: 16px;
     background-color: #cac9c8ba;
     border: 1px solid rgb(10, 3, 3);
+}
+
+#control-elements {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    justify-content: center;
+    height: 40px;
+    margin: 0 100px;
 }

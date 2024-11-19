@@ -12,8 +12,9 @@ import { CommonModule } from '@angular/common';
   styleUrl: './add-image-popup.component.css'
 })
 export class AddImagePopupComponent implements addImagePopupObserver {
-  popupVisible: boolean = true;
+  popupVisible: boolean = false;
   imageLoaded: boolean = false;
+  shownSection: 'upload-image' | 'add-categories' | 'add-further-information' = 'upload-image';
 
   constructor(private popupController: PopupController) {
     this.popupController.addAddImagePopupObserver(this);

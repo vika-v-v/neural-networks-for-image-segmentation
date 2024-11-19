@@ -9,12 +9,14 @@
                 <p>Upload file:</p>
                 <input type="file" id="file" accept="image/*"/>
             </div>
+            <p class="between-text">Or</p>
             <div class="line">
-                <p>Or paste the direct URL:</p>
+                <p>Paste the direct URL:</p>
                 <input type="text" id="url-input" />
             </div>
+            <p class="between-text">Or</p>
             <div class="line">
-                <p>Or generate from ThisPersonDoesntExist:</p>
+                <p>Generate random from ThisPersonDoesntExist:</p>
                 <button id="generate">Generate</button>
             </div>
         </div>
@@ -26,6 +28,10 @@
             <button id="upload">Upload</button>
             <button id="cancel">Cancel</button>
         </div-->
+        <div id="control-elements">
+            <img [src]="shownSection != 'upload-image' ? 'assets/9026267_caret_left_thin_icon.svg' : 'assets/placeholder-caret-right-left.svg'"/>
+            <img [src]="imageLoaded ? 'assets/9026425_caret_right_thin_icon.svg' : 'assets/placeholder-caret-right-left.svg'"/>
+        </div>
     </div>
 </div>
 
