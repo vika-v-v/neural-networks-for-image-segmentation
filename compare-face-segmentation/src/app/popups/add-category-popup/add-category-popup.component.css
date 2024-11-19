@@ -88,19 +88,17 @@ p {
 #undercategory-wrapper > input, #undercategory-wrapper > p, #undercategories div[cdkDrag] > p, #undercategories div[cdkDrag] > input {
     width: 100%;
     font-size: 17px;
-    background-color: #ffffff8a;
     padding: 5px;
     border-radius: 3px;
+    background-color: rgb(227, 227, 227);
+    border: 1px dashed rgb(0, 0, 0);
 }
 
-#undercategory-wrapper > p {
-    border: 1px dashed rgb(131, 131, 131);
+#undercategory-wrapper > p, #undercategory-wrapper > input {
+    border: 1px solid rgb(158, 158, 158) !important;
+    background-color: #ffffff8a !important;
 }
 
 .cdk-drag-preview {
     display: none;
-}
-  
-#move-icon {
-    cursor: grab;
 }
