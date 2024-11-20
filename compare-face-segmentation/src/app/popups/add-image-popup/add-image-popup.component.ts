@@ -14,12 +14,13 @@ import { CommonModule } from '@angular/common';
 export class AddImagePopupComponent implements AddImagePopupObserver {
   popupVisible: boolean = true;
   imageLoaded: boolean = false;
-  shownSection: 'upload-image' | 'add-categories' | 'add-further-information' = 'upload-image';
+  shownSection: 'upload-image' | 'add-categories' | 'add-further-information';
 
   imageUrl: string = '';
 
   constructor(private popupController: PopupController) {
     this.popupController.addAddImagePopupObserver(this);
+    this.shownSection = 'upload-image';
   }
 
   showAddImagePopup(): void {
@@ -59,4 +60,20 @@ export class AddImagePopupComponent implements AddImagePopupObserver {
     this.imageUrl = randomImageUrl;
     this.imageLoaded = true;
   }  
+
+  nextSection(): void {
+    if (this.shownSection === 'upload-image') {
+      this.shownSection = 'add-categories';
+    } else if (this.shownSection === 'add-categories') {
+      this.shownSection = 'add-further-information';
+    }
+  }
+
+  previousSection(): void {
+    if (this.shownSection === 'add-categories') {
+      this.shownSection = 'upload-image';
+    } else if (this.shownSection === 'add-further-information') {
+      this.shownSection = 'add-categories';
+    }
+  }
 }

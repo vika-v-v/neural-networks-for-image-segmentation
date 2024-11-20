@@ -3,37 +3,40 @@
         <img *ngIf="!imageLoaded" src="assets/9026847_image_square_thin_icon.svg" alt="Image preview" class="icon"/>
         <img *ngIf="imageLoaded" [src]="imageUrl" alt="Uploaded image" id="loaded-image"/>
     </div>
-    <div id="options">
-        <p class="section-header">Upload your image:</p>
-        <div class="section">
-            <div class="line">
-                <p>Upload file:</p>
-                <input type="file" id="file" accept="image/*" (change)="onFileSelected($event)"/>
-            </div>
-            <p class="between-text">Or</p>
-            <div class="line">
-                <p>Paste the direct URL:</p>
-                <input type="text" id="url-input" (input)="onUrlInput($event)" />
-            </div>
-            <p class="between-text">Or</p>
-            <div class="line">
-                <p>Generate random from ThisPersonDoesntExist:</p>
-                <button id="generate" (click)="generateRandomImage()">Generate</button>
+    
+    <div class="section-wrapper">
+        <div *ngIf="shownSection == 'upload-image'" class="content">
+            <p class="section-header">Upload your image:</p>
+            <div class="section">
+                <div class="line">
+                    <p>Upload file:</p>
+                    <input type="file" id="file" accept="image/*" (change)="onFileSelected($event)"/>
+                </div>
+                <p class="between-text">Or</p>
+                <div class="line">
+                    <p>Paste the direct URL:</p>
+                    <input type="text" id="url-input" (input)="onUrlInput($event)" />
+                </div>
+                <p class="between-text">Or</p>
+                <div class="line">
+                    <p>Generate random from ThisPersonDoesntExist:</p>
+                    <button id="generate" (click)="generateRandomImage()">Generate</button>
+                </div>
             </div>
         </div>
-        <!--p class="section-header">Select the category:</p>
-        <div class="section">
-            <div>Category selection</div>
+
+        <div *ngIf="shownSection == 'add-categories'" class="content">
+            <p class="section-header">Add categories:</p>
+            <div class="section">
+                
+            </div>
         </div>
-        <div id="buttons">
-            <button id="upload">Upload</button>
-            <button id="cancel">Cancel</button>
-        </div-->
+
         <div id="control-elements">
-            <img [src]="shownSection != 'upload-image' ? 'assets/9026267_caret_left_thin_icon.svg' : 'assets/placeholder-caret-right-left.svg'"/>
-            <img [src]="imageLoaded ? 'assets/9026425_caret_right_thin_icon.svg' : 'assets/placeholder-caret-right-left.svg'"/>
+            <img (click)="previousSection()" [src]="shownSection != 'upload-image' ? 'assets/9026267_caret_left_thin_icon.svg' : 'assets/placeholder-caret-right-left.svg'"/>
+            <img (click)="nextSection()" [src]="imageLoaded ? 'assets/9026425_caret_right_thin_icon.svg' : 'assets/placeholder-caret-right-left.svg'"/>
         </div>
-    </div>
+    </div>  
 </div>
 
 <div id="background" *ngIf="popupVisible" (click)="hidePopup()"></div>
