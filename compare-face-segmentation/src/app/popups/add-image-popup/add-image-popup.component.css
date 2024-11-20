@@ -18,6 +18,8 @@
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    max-height: 90vh;
+    overflow-y: auto;
 }
 
 .section-wrapper > .content {
@@ -82,7 +84,7 @@ p {
     border-radius: 5px;
     
     margin: 10px 0 25px;
-    width: calc(100% - 20px);
+    width: 100%;
     
     height: 100%;
 }
@@ -105,7 +107,7 @@ p {
 }
 
 .line > p {
-    font-size: 20px;
+    font-size: 17px;
     width: 100%;
 }
 
@@ -113,12 +115,15 @@ p {
     height: fit-content;
 }
 
-.line > input, .line > button {
+.line > input, .line > textarea, .line > button {
     padding: 5px;
     border-radius: 5px;
-    font-size: 20px;
+    font-size: 17px;
     background-color: #f4f2ee;
     border: 0.5px solid black;
+    width: 100%;
+    min-width: 100%;
+    max-width: 100%;
 }
 
 #generate:hover {
@@ -253,4 +258,33 @@ p {
     width: 20px;
     height: 20px;
     cursor: pointer;
+}
+
+#add-further-information-section {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    margin: 20px 0;
+}
+
+#buttons-publish-cancel > button {
+    padding: 7px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 18px;
+    background-color: #cac9c8ba;
+    border: 1px solid rgb(10, 3, 3);
+    width: 100%;
+}
+
+#buttons-publish-cancel {
+    width: 100%;
+    min-width: 100%;
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+}
+
+#add-further-information-section > .line {
+    padding: 15px 20px;
 }

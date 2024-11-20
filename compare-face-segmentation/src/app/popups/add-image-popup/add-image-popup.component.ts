@@ -17,7 +17,7 @@ import { FormsModule } from '@angular/forms';
 export class AddImagePopupComponent implements AddImagePopupObserver {
   popupVisible: boolean = true;
   imageLoaded: boolean = false;
-  shownSection: 'upload-image' | 'add-categories' | 'add-further-information';
+  shownSection: 'upload-image' | 'add-categories' | 'add-further-information' = 'add-further-information';
 
   imageUrl: string = '';
   allCategories: { id: number; name: string; undercategories: { id: number; name: string }[] }[] = [];
@@ -27,7 +27,6 @@ export class AddImagePopupComponent implements AddImagePopupObserver {
 
   constructor(private popupController: PopupController, private categoryService: CategoryService) {
     this.popupController.addAddImagePopupObserver(this);
-    this.shownSection = 'add-categories';
     this.loadCategories();
   }
 

@@ -60,9 +60,33 @@
             </div>
         </div>
 
+        <div *ngIf="shownSection == 'add-further-information'" class="content">
+            <p class="section-header">Add further information and publish:</p>
+            <div class="section" id="add-further-information-section">
+                
+                <div class="line">
+                    <p>Image origin:</p>
+                    <input type="text" id="image-origin"/>
+                </div>
+                <div class="line">
+                    <p>Tags:</p>
+                    <input type="text" id="image-origin"/>
+                </div>
+                <div class="line">
+                    <p>Notes:</p>
+                    <textarea type="text" id="image-origin" rows="2"></textarea>
+                </div>
+                
+                <div id="buttons-publish-cancel">
+                    <button id="publish">Publish</button>
+                    <button id="cancel">Cancel</button>
+                </div>
+            </div>
+        </div>
+
         <div id="control-elements">
             <img (click)="previousSection()" [src]="shownSection != 'upload-image' ? 'assets/9026267_caret_left_thin_icon.svg' : 'assets/placeholder-caret-right-left.svg'"/>
-            <img (click)="nextSection()" [src]="imageLoaded ? 'assets/9026425_caret_right_thin_icon.svg' : 'assets/placeholder-caret-right-left.svg'"/>
+            <img (click)="nextSection()" [src]="imageLoaded && shownSection != 'add-further-information' ? 'assets/9026425_caret_right_thin_icon.svg' : 'assets/placeholder-caret-right-left.svg'"/>
         </div>
     </div>  
 </div>
