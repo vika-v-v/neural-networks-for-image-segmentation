@@ -12,9 +12,11 @@ import { CommonModule } from '@angular/common';
   styleUrl: './add-image-popup.component.css'
 })
 export class AddImagePopupComponent implements AddImagePopupObserver {
-  popupVisible: boolean = false;
+  popupVisible: boolean = true;
   imageLoaded: boolean = false;
   shownSection: 'upload-image' | 'add-categories' | 'add-further-information' = 'upload-image';
+
+  imageUrl: string = '';
 
   constructor(private popupController: PopupController) {
     this.popupController.addAddImagePopupObserver(this);
@@ -27,4 +29,34 @@ export class AddImagePopupComponent implements AddImagePopupObserver {
   hidePopup(): void {
     this.popupVisible = false;
   }
+
+  // Handle file selection
+  onFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files[0]) {
+      const file = input.files[0];
+      const reader = new FileReader();
+
+      reader.onload = () => {
+        this.imageUrl = reader.result as string; // Set the image URL for preview
+        this.imageLoaded = true;
+      };
+
+      reader.readAsDataURL(file); // Convert file to base64 string
+    }
+  }
+
+  // Handle URL input
+  onUrlInput(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (!input || !input.value) return; // Check for valid input element and value
+    this.imageUrl = input.value.trim(); // Assign the trimmed value to the imageUrl property
+    this.imageLoaded = true;
+  }  
+
+  generateRandomImage(): void {
+    const randomImageUrl = `https://thispersondoesnotexist.com?${Date.now()}`;
+    this.imageUrl = randomImageUrl;
+    this.imageLoaded = true;
+  }  
 }

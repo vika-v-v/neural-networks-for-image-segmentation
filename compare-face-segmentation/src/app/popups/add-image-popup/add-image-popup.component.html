@@ -1,23 +1,24 @@
 <div id="container" *ngIf="popupVisible">
     <div id="image-preview">
         <img *ngIf="!imageLoaded" src="assets/9026847_image_square_thin_icon.svg" alt="Image preview" class="icon"/>
+        <img *ngIf="imageLoaded" [src]="imageUrl" alt="Uploaded image" id="loaded-image"/>
     </div>
     <div id="options">
         <p class="section-header">Upload your image:</p>
         <div class="section">
             <div class="line">
                 <p>Upload file:</p>
-                <input type="file" id="file" accept="image/*"/>
+                <input type="file" id="file" accept="image/*" (change)="onFileSelected($event)"/>
             </div>
             <p class="between-text">Or</p>
             <div class="line">
                 <p>Paste the direct URL:</p>
-                <input type="text" id="url-input" />
+                <input type="text" id="url-input" (input)="onUrlInput($event)" />
             </div>
             <p class="between-text">Or</p>
             <div class="line">
                 <p>Generate random from ThisPersonDoesntExist:</p>
-                <button id="generate">Generate</button>
+                <button id="generate" (click)="generateRandomImage()">Generate</button>
             </div>
         </div>
         <!--p class="section-header">Select the category:</p>

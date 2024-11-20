@@ -18,7 +18,7 @@ import { CategoriesObserverService } from '../../comparation-page/comparation-se
   styleUrl: './add-category-popup.component.css'
 })
 export class AddCategoryPopupComponent implements AddEditCategoryPopupObserver {
-  popupVisible: boolean = true;
+  popupVisible: boolean = false;
   undercategories: {name: string, currentlyEditing: boolean}[] = [];
   categoryName: string = '';
   editingMode: boolean = false;
