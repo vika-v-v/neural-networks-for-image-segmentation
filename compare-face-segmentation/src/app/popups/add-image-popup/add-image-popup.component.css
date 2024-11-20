@@ -159,3 +159,27 @@ p {
     height: 40px;
     cursor: pointer;
 }
+
+#search-field {
+    width: 100%;
+    padding: 5px;
+    border-radius: 5px;
+    
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+}
+
+#search-input {
+    width: 100%;
+    font-size: 16px;
+    padding: 5px;
+    border-radius: 5px;
+    border: 0.5px solid black;
+}
+
+#search-icon {
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+}

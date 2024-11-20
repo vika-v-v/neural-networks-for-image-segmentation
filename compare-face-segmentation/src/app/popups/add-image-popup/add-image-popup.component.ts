@@ -20,7 +20,7 @@ export class AddImagePopupComponent implements AddImagePopupObserver {
 
   constructor(private popupController: PopupController) {
     this.popupController.addAddImagePopupObserver(this);
-    this.shownSection = 'upload-image';
+    this.shownSection = 'add-categories';
   }
 
   showAddImagePopup(): void {
