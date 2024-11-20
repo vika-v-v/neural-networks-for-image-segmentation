@@ -27,10 +27,35 @@
 
         <div *ngIf="shownSection == 'add-categories'" class="content">
             <p class="section-header">Add categories:</p>
-            <div class="section">
+            <div class="section" id="add-categories-section">
                 <div id="search-field">
-                    <input type="text" id="search-input" placeholder="Search for categories"/>
+                    <input type="text" id="search-input" placeholder="Search for categories" [(ngModel)]="searchQuery" (input)="onSearch(searchQuery)"/>
                     <img src="assets/9026843_magnifying_glass_thin_icon.svg" alt="search-icon" id="search-icon"/>
+                </div>
+                <div id="options-wrapper">
+                    <div id="search-options">
+                        <div *ngFor="let category of filteredCategories">
+                            <div
+                              *ngFor="let undercategory of category.undercategories"
+                              (click)="isUndercategorySelected(undercategory) ? removeUndercategory(undercategory) : selectUndercategory(category.name, undercategory)"
+                              [ngClass]="{'selected': isUndercategorySelected(undercategory)}"
+                              class="undercategory-option"
+                            >
+                          <p class="search-option" [ngClass]="{'selected': isUndercategorySelected(undercategory)}">{{ category.name }}.{{ undercategory.name }}</p>
+                        </div>
+                      </div>
+                    </div>
+                </div>
+                <div id="selected-options">
+                    <div *ngFor="let undercategory of selectedUndercategories">
+                      <p>{{ undercategory.name }}</p>
+                      <img
+                        src="assets/9027215_x_thin_icon.svg"
+                        alt="Remove"
+                        class="remove-undercategory-icon"
+                        (click)="removeUndercategory(undercategory)"
+                      />
+                    </div>
                 </div>
             </div>
         </div>

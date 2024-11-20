@@ -1,12 +1,15 @@
 import { Component } from '@angular/core';
 import { PopupController, AddImagePopupObserver } from '../popup-controller.service';
 import { CommonModule } from '@angular/common';
+import { CategoryService } from '../../server-communication/categories.service';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-add-image-popup',
   standalone: true,
   imports: [
-    CommonModule
+    CommonModule,
+    FormsModule
   ],
   templateUrl: './add-image-popup.component.html',
   styleUrl: './add-image-popup.component.css'
@@ -17,10 +20,15 @@ export class AddImagePopupComponent implements AddImagePopupObserver {
   shownSection: 'upload-image' | 'add-categories' | 'add-further-information';
 
   imageUrl: string = '';
+  allCategories: { id: number; name: string; undercategories: { id: number; name: string }[] }[] = [];
+  filteredCategories: { id: number; name: string; undercategories: { id: number; name: string }[] }[] = [];
+  selectedUndercategories: { id: number; name: string }[] = [];
+  searchQuery: string = '';
 
-  constructor(private popupController: PopupController) {
+  constructor(private popupController: PopupController, private categoryService: CategoryService) {
     this.popupController.addAddImagePopupObserver(this);
     this.shownSection = 'add-categories';
+    this.loadCategories();
   }
 
   showAddImagePopup(): void {
@@ -76,4 +84,44 @@ export class AddImagePopupComponent implements AddImagePopupObserver {
       this.shownSection = 'add-categories';
     }
   }
+
+  loadCategories(): void {
+    this.categoryService.getCategories().subscribe((response: any) => {
+      this.allCategories = response.categories;
+      this.filteredCategories = [...this.allCategories]; // Initialize filtered categories
+    });
+  }
+
+  // Filter categories based on search query
+  onSearch(query: string): void {
+    this.searchQuery = query;
+    if (query.trim() === '') {
+      this.filteredCategories = [...this.allCategories];
+    } else {
+      this.filteredCategories = this.allCategories.filter(category =>
+        category.name.toLowerCase().includes(query.toLowerCase()) ||
+        category.undercategories.some(uc => uc.name.toLowerCase().includes(query.toLowerCase()))
+      );
+    }
+  }
+
+  // Select an undercategory
+  selectUndercategory(categoryName: string, undercategory: { id: number; name: string }): void {
+    if (!this.selectedUndercategories.some(uc => uc.id === undercategory.id)) {
+      this.selectedUndercategories.push({
+        id: undercategory.id,
+        name: `${categoryName}.${undercategory.name}` // Format as category.undercategory
+      });
+    }
+  }  
+
+  // Remove an undercategory from selected list
+  removeUndercategory(undercategory: { id: number; name: string }): void {
+    this.selectedUndercategories = this.selectedUndercategories.filter(uc => uc.id !== undercategory.id);
+  }  
+
+  isUndercategorySelected(undercategory: { id: number; name: string }): boolean {
+    return this.selectedUndercategories.some(uc => uc.id === undercategory.id);
+  }
+  
 }
