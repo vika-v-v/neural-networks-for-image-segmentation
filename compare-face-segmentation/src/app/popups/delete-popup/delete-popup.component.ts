@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
-import { PopupController, deletePopupObserver } from '../popup-controller.service';
+import { PopupController, DeletePopupObserver } from '../popup-controller.service';
 import { CategoryService } from '../../server-communication/categories.service';
 import { CategoriesObserverService } from '../../comparation-page/comparation-section/image-categories-menu/categories-observer.service';
 
@@ -13,7 +13,7 @@ import { CategoriesObserverService } from '../../comparation-page/comparation-se
   templateUrl: './delete-popup.component.html',
   styleUrl: './delete-popup.component.css'
 })
-export class DeletePopupComponent implements deletePopupObserver  {
+export class DeletePopupComponent implements DeletePopupObserver  {
   category: any = {name: '', id: 0};
   popupVisible: boolean = false;
 

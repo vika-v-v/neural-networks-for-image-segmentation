@@ -1,16 +1,17 @@
 import { Injectable } from '@angular/core';
 
-export interface deletePopupObserver {
+export interface DeletePopupObserver {
     showDeleteCategoryPopup(category: any): void;
     // later add show image delete popup
 }
 
-export interface addImagePopupObserver {
+export interface AddImagePopupObserver {
     showAddImagePopup(): void;
 }
 
-export interface addCategoryPopupObserver {
+export interface AddEditCategoryPopupObserver {
     showAddCategoryPopup(): void;
+    showEditCategoryPopup(category: any): void;
 }
 
 @Injectable({
@@ -18,11 +19,11 @@ export interface addCategoryPopupObserver {
 })
 export class PopupController {
 
-    deletePopupObserver!: deletePopupObserver;
-    addImagePopupObserver!: addImagePopupObserver;
-    addCategoryPopupObserver!: addCategoryPopupObserver;
+    deletePopupObserver!: DeletePopupObserver;
+    addImagePopupObserver!: AddImagePopupObserver;
+    addCategoryPopupObserver!: AddEditCategoryPopupObserver;
 
-    addDeletePopupObserver(observer: deletePopupObserver): void {
+    addDeletePopupObserver(observer: DeletePopupObserver): void {
         this.deletePopupObserver = observer;
     }
 
@@ -30,7 +31,7 @@ export class PopupController {
         this.deletePopupObserver.showDeleteCategoryPopup(category);
     }
 
-    addAddImagePopupObserver(observer: addImagePopupObserver): void {
+    addAddImagePopupObserver(observer: AddImagePopupObserver): void {
         this.addImagePopupObserver = observer;
     }
 
@@ -38,11 +39,12 @@ export class PopupController {
         this.addImagePopupObserver.showAddImagePopup();
     }
 
-    addAddCategoryPopupObserver(observer: addCategoryPopupObserver): void {
+    addAddCategoryPopupObserver(observer: AddEditCategoryPopupObserver): void {
         this.addCategoryPopupObserver = observer;
     }
 
-    showAddCategoryPopup(): void {
-        this.addCategoryPopupObserver.showAddCategoryPopup();
+    showAddOrEditCategoryPopup(category?: any): void {
+        if(!category) this.addCategoryPopupObserver.showAddCategoryPopup();
+        else          this.addCategoryPopupObserver.showEditCategoryPopup(category);
     }
 }

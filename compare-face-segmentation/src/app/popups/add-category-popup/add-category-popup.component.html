@@ -1,7 +1,7 @@
 <div id="container" *ngIf="popupVisible">
     <div class="item">
         <p>What is the name of your category?</p>
-        <input type="text" id="category-name"/>
+        <input type="text" id="category-name" [(ngModel)]="categoryName"/>
     </div>
 
     <div class="item">
@@ -24,9 +24,11 @@
     </div> 
     
     <div class="item" id="action-buttons">
-        <button id="add-category">Add Category</button>
-        <button id="cancel">Cancel</button>
+        <button id="add-category" (click)="addOrEditCategory()">{{this.editingMode ? 'Save changes' : 'Add Caregory'}}</button>
+        <button id="cancel" (click)="hidePopup()">Cancel</button>
     </div>
 </div>
 
 <div id="background" *ngIf="popupVisible" (click)="hidePopup()"></div>
+
+<!--TODO: add images-->

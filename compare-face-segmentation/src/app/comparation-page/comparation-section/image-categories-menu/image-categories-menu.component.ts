@@ -22,7 +22,7 @@ export class ImageCategoriesMenuComponent implements CategoriesObserver {
 
   @Output() undercategorySelected: EventEmitter<number> = new EventEmitter(); // Emit number ID
 
-  constructor(private imageService: ImageService, private categoryService: CategoryService, private popupController: PopupController, private categoryObserverService: CategoriesObserverService) {
+  constructor(private categoryService: CategoryService, private popupController: PopupController, private categoryObserverService: CategoriesObserverService) {
     this.updateCategories();
 
     console.log(this.activeCategoryIds);
@@ -73,6 +73,10 @@ export class ImageCategoriesMenuComponent implements CategoriesObserver {
   }
 
   triggerAddCategoryPopup() {
-    this.popupController.showAddCategoryPopup();
+    this.popupController.showAddOrEditCategoryPopup();
+  }
+
+  triggerEditCategoryPopup(category: any) {
+    this.popupController.showAddOrEditCategoryPopup(category);
   }
 }

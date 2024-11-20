@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { PopupController, addImagePopupObserver } from '../popup-controller.service';
+import { PopupController, AddImagePopupObserver } from '../popup-controller.service';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -11,7 +11,7 @@ import { CommonModule } from '@angular/common';
   templateUrl: './add-image-popup.component.html',
   styleUrl: './add-image-popup.component.css'
 })
-export class AddImagePopupComponent implements addImagePopupObserver {
+export class AddImagePopupComponent implements AddImagePopupObserver {
   popupVisible: boolean = false;
   imageLoaded: boolean = false;
   shownSection: 'upload-image' | 'add-categories' | 'add-further-information' = 'upload-image';
