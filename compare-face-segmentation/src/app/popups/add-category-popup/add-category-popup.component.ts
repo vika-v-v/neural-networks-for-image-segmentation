@@ -18,6 +18,7 @@ import { CategoriesObserverService } from '../../comparation-page/comparation-se
   styleUrl: './add-category-popup.component.css'
 })
 export class AddCategoryPopupComponent implements AddEditCategoryPopupObserver {
+  // TODO: after a lot of times adding and removing the undercategories, there is some problem with the server, fix it
   popupVisible: boolean = false;
   undercategories: {name: string, currentlyEditing: boolean}[] = [];
   categoryName: string = '';
@@ -84,6 +85,7 @@ export class AddCategoryPopupComponent implements AddEditCategoryPopupObserver {
       }))
     };
 
+    // TODO: fix removing undercategories and adding them once again becuase the images are lost
     // Call the service method
     if(!this.editingMode) {
       this.categoryService.addCategory(category).subscribe(

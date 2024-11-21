@@ -79,4 +79,5 @@ export class ImageCategoriesMenuComponent implements CategoriesObserver {
   triggerEditCategoryPopup(category: any) {
     this.popupController.showAddOrEditCategoryPopup(category);
   }
+  
 }

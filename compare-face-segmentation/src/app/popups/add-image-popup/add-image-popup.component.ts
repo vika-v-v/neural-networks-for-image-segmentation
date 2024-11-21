@@ -3,6 +3,7 @@ import { PopupController, AddImagePopupObserver } from '../popup-controller.serv
 import { CommonModule } from '@angular/common';
 import { CategoryService } from '../../server-communication/categories.service';
 import { FormsModule } from '@angular/forms';
+import { ImageService } from '../../server-communication/image.service';
 
 @Component({
   selector: 'app-add-image-popup',
@@ -15,9 +16,11 @@ import { FormsModule } from '@angular/forms';
   styleUrl: './add-image-popup.component.css'
 })
 export class AddImagePopupComponent implements AddImagePopupObserver {
-  popupVisible: boolean = true;
+  // TODO: add the possibility to remove an andded image
+  // TODO: save origin, tags and notes
+  popupVisible: boolean = false;
   imageLoaded: boolean = false;
-  shownSection: 'upload-image' | 'add-categories' | 'add-further-information' = 'add-further-information';
+  shownSection: 'upload-image' | 'add-categories' | 'add-further-information' = 'upload-image';
 
   imageUrl: string = '';
   allCategories: { id: number; name: string; undercategories: { id: number; name: string }[] }[] = [];
@@ -25,7 +28,7 @@ export class AddImagePopupComponent implements AddImagePopupObserver {
   selectedUndercategories: { id: number; name: string }[] = [];
   searchQuery: string = '';
 
-  constructor(private popupController: PopupController, private categoryService: CategoryService) {
+  constructor(private popupController: PopupController, private categoryService: CategoryService, private imageService: ImageService) {
     this.popupController.addAddImagePopupObserver(this);
     this.loadCategories();
   }
@@ -63,10 +66,18 @@ export class AddImagePopupComponent implements AddImagePopupObserver {
   }  
 
   generateRandomImage(): void {
-    const randomImageUrl = `https://thispersondoesnotexist.com?${Date.now()}`;
-    this.imageUrl = randomImageUrl;
-    this.imageLoaded = true;
-  }  
+    this.imageService.getRandomImageBase64().subscribe(
+      (base64String: string) => {
+        this.imageUrl = base64String;
+        this.imageLoaded = true;
+      },
+      (error) => {
+        console.error('Error fetching random image as Base64:', error);
+      }
+    );
+  }
+  
+  
 
   nextSection(): void {
     if (this.shownSection === 'upload-image') {
@@ -122,5 +133,42 @@ export class AddImagePopupComponent implements AddImagePopupObserver {
   isUndercategorySelected(undercategory: { id: number; name: string }): boolean {
     return this.selectedUndercategories.some(uc => uc.id === undercategory.id);
   }
+
+  cancel(): void {
+    this.hidePopup();
+    this.imageUrl = '';
+    this.filteredCategories = [];
+    this.selectedUndercategories = [];
+    this.searchQuery = '';
+    this.shownSection = 'upload-image';
+  }
+
+  saveImage(): void {
+    if (!this.imageUrl) {
+      console.error('No image URL provided.');
+      return;
+    }
+  
+    if (this.selectedUndercategories.length === 0) {
+      console.error('No undercategories selected.');
+      return;
+    }
+  
+    const image = {
+      url: this.imageUrl,
+      undercategories: this.selectedUndercategories.map(uc => uc.id) // Send only the IDs of selected undercategories
+    };
+  
+    this.imageService.saveImage(image).subscribe(
+      (response) => {
+        console.log('Image saved successfully:', response);
+        this.cancel(); // Reset the popup after successful save
+      },
+      (error) => {
+        console.error('Error saving image:', error);
+      }
+    );
+  }
+  
   
 }

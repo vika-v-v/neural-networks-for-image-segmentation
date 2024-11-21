@@ -70,7 +70,7 @@ p {
     margin: auto;
 }
 
-#undercategories {
+.undercategories {
     display: flex;
     flex-direction: column;
     gap: 10px;
@@ -79,7 +79,7 @@ p {
     overflow-y: auto;
 }
 
-#undercategory-wrapper, #undercategories div[cdkDrag] {
+#undercategory-wrapper, .undercategories div[cdkDrag] {
     display: flex;
     flex-direction: row;
     gap: 10px;
@@ -87,7 +87,7 @@ p {
     align-items: center;
 }
 
-#undercategory-wrapper > input, #undercategory-wrapper > p, #undercategories div[cdkDrag] > p, #undercategories div[cdkDrag] > input {
+#undercategory-wrapper > input, #undercategory-wrapper > p, .undercategories div[cdkDrag] > p, .undercategories div[cdkDrag] > input {
     width: 100%;
     font-size: 17px;
     padding: 5px;

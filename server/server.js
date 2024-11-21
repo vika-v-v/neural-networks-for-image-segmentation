@@ -1,7 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-const sharp = require('sharp'); // For image processing
 const app = express();
 
 const categoriesApi = require('./apiEndpoints/categories');
@@ -11,9 +10,12 @@ const neuralNetworksRouter = require('./apiEndpoints/neuralNetworks')
 const processImage = require('./apiEndpoints/processImage');
 const imageByIdRouter = require('./apiEndpoints/imageById');
 const getRandomSegment = require('./apiEndpoints/getRandomSegment');
+const saveImage = require('./apiEndpoints/saveImage');
+const randomImage = require('./apiEndpoints/randomImage');
 
+app.use(bodyParser.json({ limit: '10mb' })); // Adjust the limit as needed
+app.use(bodyParser.urlencoded({ limit: '10mb', extended: true }));
 app.use(cors());
-app.use(bodyParser.json());
 app.use(express.json());
 
 app.use('/categories', categoriesApi);
@@ -23,6 +25,8 @@ app.use('/getProcessedImageData', processImage);
 app.use('/neuralNetworks', neuralNetworksRouter);
 app.use('/imageById', imageByIdRouter);
 app.use('/getRandomSegment', getRandomSegment);
+app.use('/images', saveImage);
+app.use('/random-image', randomImage);
 
 
 let pipeline, env, fetch;
