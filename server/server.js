@@ -10,7 +10,7 @@ const neuralNetworksRouter = require('./apiEndpoints/neuralNetworks')
 const processImage = require('./apiEndpoints/processImage');
 const imageByIdRouter = require('./apiEndpoints/imageById');
 const getRandomSegment = require('./apiEndpoints/getRandomSegment');
-const saveImage = require('./apiEndpoints/saveImage');
+const saveRemoveImage = require('./apiEndpoints/saveRemoveImage');
 const randomImage = require('./apiEndpoints/randomImage');
 
 app.use(bodyParser.json({ limit: '10mb' })); // Adjust the limit as needed
@@ -25,7 +25,7 @@ app.use('/getProcessedImageData', processImage);
 app.use('/neuralNetworks', neuralNetworksRouter);
 app.use('/imageById', imageByIdRouter);
 app.use('/getRandomSegment', getRandomSegment);
-app.use('/images', saveImage);
+app.use('/images', saveRemoveImage);
 app.use('/random-image', randomImage);
 
 

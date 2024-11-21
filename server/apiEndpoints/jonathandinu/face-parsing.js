@@ -37,13 +37,22 @@ function mapLabel(technicalLabel) {
   return labelMapping[technicalLabel] || technicalLabel;
 }
 
-async function processImageWithModel(imageUrl) {
+async function processImageWithModel(imageInput) {
   const model = await pipeline(
     "image-segmentation",
     "jonathandinu/face-parsing"
   );
 
-  const output = await model(imageUrl);
+  const imageDataUrl = await getImageDataUrl(imageInput);
+
+  let output;
+  try {
+    // Pass imageInput directly to the model
+    output = await model(imageDataUrl);
+  } catch (error) {
+    console.error("Error calling the segmentation model:", error);
+    throw error;
+  }
 
   let segments = [];
 
@@ -52,18 +61,7 @@ async function processImageWithModel(imageUrl) {
       try {
         const color = getRandomColor();
         const maskImage = createMaskImage(segment.mask, color);
-        const overlay = {
-          input: Buffer.from(maskImage),
-          raw: {
-            width: segment.mask.width,
-            height: segment.mask.height,
-            channels: 4,
-            premultiplied: false,
-          },
-        };
 
-        const response = await fetch(imageUrl);
-        const imageBuffer = await response.buffer();
         const processedImageBuffer = await sharp(Buffer.from(maskImage), {
           raw: {
             width: segment.mask.width,
@@ -79,20 +77,21 @@ async function processImageWithModel(imageUrl) {
         const label = mapLabel(segment.label);
 
         segments.push({
-          label: label, 
-          color: hexColor, 
-          score: segment.score, 
-          base64: processedImageData
+          label: label,
+          color: hexColor,
+          score: segment.score,
+          base64: processedImageData,
         });
       } catch (error) {
         console.log("Error processing image segment:", error);
-        return;
       }
     })
   );
 
   return segments;
 }
+
+
 
 function createMaskImage(mask, color) {
   let maskImage = new Uint8ClampedArray(mask.width * mask.height * 4);
@@ -137,5 +136,30 @@ function rgbToHex(r, g, b, a = 1) {
   // Concatenate each component into a single hexadecimal string prefixed with '#'
   return `#${red}${green}${blue}${alphaHex}`;
 }
+
+async function getImageDataUrl(imageInput) {
+  if (typeof imageInput === "string") {
+    if (imageInput.startsWith("data:image")) {
+      // It's already a data URL
+      return imageInput;
+    } else if (imageInput.startsWith("http")) {
+      // It's a URL
+      return imageInput;
+    } else {
+      // It's a base64 string without the data URL prefix
+      // Detect the MIME type
+      const imageBuffer = Buffer.from(imageInput, "base64");
+      const type = await FileType.fromBuffer(imageBuffer);
+      if (!type) {
+        throw new Error("Unable to determine image MIME type");
+      }
+      const dataUrl = `data:${type.mime};base64,${imageInput}`;
+      return dataUrl;
+    }
+  } else {
+    throw new Error("Invalid input type: expected a string");
+  }
+}
+
 
 module.exports = processImageWithModel;

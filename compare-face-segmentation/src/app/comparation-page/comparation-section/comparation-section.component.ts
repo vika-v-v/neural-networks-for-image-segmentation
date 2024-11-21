@@ -18,6 +18,7 @@ import { CommonModule } from '@angular/common';
   ]
 })
 export class ComparationSectionComponent implements OnChanges {
+  // TODO: confirm deleting the image
   images: any[] = [];
   undercategsWithCache: number[] = [];
   neuralNetworks: any = [];
@@ -28,6 +29,8 @@ export class ComparationSectionComponent implements OnChanges {
 
   currentHtmlElement: HTMLElement | null = null;
   currentImageInformation: ImageInformationFormat | null = null;
+
+  removeImageShown: boolean = false;
 
   constructor(private imageService: ImageService, private nNetwors: NNetworkService, private http: HttpClient, private positioningService: ImageInformationPositionService) {
     nNetwors.getNeuralNetworks().subscribe({
@@ -139,5 +142,16 @@ export class ComparationSectionComponent implements OnChanges {
       this.images[imageIndex].height = height; // Update the height in your images array
     }
   }
+
+  removeImage(imageId: number): void {
+    this.imageService.removeImage(imageId).subscribe({
+      next: (response) => {
+        this.updateVisibleImages();
+      },
+      error: (error) => console.error('Error deleting:', error)
+    });
+    this.updateVisibleImages();
+  }
+
   
 }

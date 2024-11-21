@@ -29,6 +29,7 @@ export class ImageCategoriesMenuComponent implements CategoriesObserver {
 
     this.undercategorySelected.emit(this.selectedUndercategoryId);
     categoryObserverService.addCategoriesObserver(this);
+    this.selectFirstUndercategory();
   }
 
   updateCategories() {
@@ -78,6 +79,28 @@ export class ImageCategoriesMenuComponent implements CategoriesObserver {
 
   triggerEditCategoryPopup(category: any) {
     this.popupController.showAddOrEditCategoryPopup(category);
+  }
+
+  selectFirstUndercategory() {
+    if (this.categories.length > 0) {
+      this.setSelectedUndercategory(this.categories[0].undercategories[0].id);
+    }
+    else {
+      this.categoryService.getCategories().subscribe({
+        next: (response: any) => {
+          for (const category of this.categories) {
+            if (category.undercategories && category.undercategories.length > 0) {
+              this.selectedUndercategoryId = category.undercategories[0].id;
+              this.undercategorySelected.emit(this.selectedUndercategoryId);
+              break; // Exit the loop after selecting the first undercategory
+            }
+          }
+        },
+        error: (error) => {
+          console.error('Error fetching categories:', error);
+        }
+      });
+    }
   }
   
 }

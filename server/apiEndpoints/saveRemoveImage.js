@@ -36,4 +36,32 @@ router.post('/add', (req, res) => {
     });
   });  
 
+  router.delete('/remove/:imgId', (req, res) => {
+    const { imgId } = req.params;
+
+    if (!imgId) {
+        return res.status(400).json({ error: 'Image ID is required' });
+    }
+
+    // Delete mappings first
+    const deleteMappingsSql = `DELETE FROM Image_Undercateg WHERE img_id = ?`;
+    db.run(deleteMappingsSql, [imgId], (err) => {
+        if (err) {
+            console.error('Error deleting image mappings:', err.message);
+            return res.status(500).json({ error: 'Error deleting image mappings' });
+        }
+
+        // Then delete the image itself
+        const deleteImageSql = `DELETE FROM Image WHERE img_id = ?`;
+        db.run(deleteImageSql, [imgId], (err) => {
+            if (err) {
+                console.error('Error deleting image:', err.message);
+                return res.status(500).json({ error: 'Error deleting image' });
+            }
+
+            res.status(200).json({ message: 'Image deleted successfully' });
+        });
+    });
+});
+
 module.exports = router;

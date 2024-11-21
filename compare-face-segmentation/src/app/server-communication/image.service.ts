@@ -51,5 +51,9 @@ export class ImageService {
     const url = `${this.baseUrl}/random-image`;
     return this.http.get(url, { responseType: 'text' }); // Specify response type as 'text'
   }
+
+  removeImage(id: number): Observable<any> {
+    return this.http.delete(`${this.baseUrl}/images/remove/` + id);
+  }
   
 }

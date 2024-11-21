@@ -31,6 +31,7 @@ tbody {
     width: calc(100% / var(--num-columns));
     height: 100%;
     text-align: center;
+    position: relative;
 }
 
 img, app-segmented-image {
@@ -52,4 +53,17 @@ th, td {
     overflow: hidden;
 }
 
-  
+#remove-image-icon {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    width: 30px;
+    height: 30px;
+    margin: 5px;
+    cursor: pointer;
+    z-index: 100;
+    border: none;
+    background-color: #f6f5f2;
+    border-radius: 5px;
+    padding: 3px;
+  }
