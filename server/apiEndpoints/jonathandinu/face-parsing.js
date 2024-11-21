@@ -12,7 +12,6 @@ let pipeline, env;
 })();
 
 const labelMapping = {
-  // Add your label mappings here
   "background": "Background",
   "skin": "Skin",
   "nose": "Nose",
