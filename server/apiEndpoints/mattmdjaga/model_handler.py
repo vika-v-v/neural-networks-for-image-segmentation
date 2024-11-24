@@ -6,6 +6,7 @@ import numpy as np
 import io
 import base64
 import torch.nn.functional as F
+from flask import Flask, request, jsonify
 
 class SegformerClothesModel:
     def __init__(self, model_name):
@@ -36,17 +37,35 @@ class SegformerClothesModel:
         return f'#{int(rgb[0]):02x}{int(rgb[1]):02x}{int(rgb[2]):02x}'
 
     def segment_image(self, url):
-        response = requests.get(url, stream=True)
-        if response.status_code != 200:
-            raise ValueError('Failed to fetch image from URL')
+        if not url:
+            print("no image data")
+            return
+        
+        elif url.startswith('http'):
+            # It's a URL
+            response = requests.get(url, stream=True)
+            if response.status_code != 200:
+                raise ValueError('Failed to fetch image from URL')
+            image = Image.open(response.raw).convert("RGB")
+        else:
+            # Assume it's base64 encoded image data
+            try:
+                # If the data starts with 'data:image/...;base64,', strip it
+                if 'base64,' in url:
+                    url = url.split('base64,')[1]
 
-        image = Image.open(response.raw).convert("RGB")
+                image_bytes = base64.b64decode(url)
+                image = Image.open(io.BytesIO(image_bytes)).convert("RGB")
+            except Exception as e:
+                raise ValueError('Failed to decode base64 image data') from e
+
+        # Process the image as before
         inputs = self.processor(images=image, return_tensors="pt")
         outputs = self.model(**inputs)
         logits = outputs.logits.cpu()
         upsampled_logits = F.interpolate(logits, size=image.size[::-1], mode="bilinear", align_corners=False)
         pred_seg = upsampled_logits.argmax(dim=1)[0]
-
+        
         segments = []
         unique_labels = np.unique(pred_seg.numpy())
 

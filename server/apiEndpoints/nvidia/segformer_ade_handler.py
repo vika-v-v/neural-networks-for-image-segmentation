@@ -40,9 +40,20 @@ class SegformerADEModel:
         return f'#{int(rgb[0]):02x}{int(rgb[1]):02x}{int(rgb[2]):02x}'
 
     def segment_image(self, url):
-        response = requests.get(url, stream=True)
-        if response.status_code != 200:
-            raise ValueError('Failed to fetch image from URL')
+        if url.startswith('http'):
+                # It's a URL
+            response = requests.get(url, stream=True)
+            if response.status_code != 200:
+                raise ValueError('Failed to fetch image from URL')
+            image = Image.open(response.raw).convert("RGB")
+        else:
+            # Assume it's base64 encoded image data
+            try:
+                image_bytes = base64.b64decode(url)
+                image = Image.open(io.BytesIO(image_bytes)).convert("RGB")
+            except Exception as e:
+                raise ValueError('Failed to decode base64 image data') from e
+
 
         image = Image.open(response.raw).convert("RGB")
         inputs = self.feature_extractor(images=image, return_tensors="pt")
