@@ -31,10 +31,12 @@ router.post('/add', (req, res) => {
         return res.status(201).json({ message: 'Image saved successfully', imgId });
       }
 
+      let hasError = false;
       mappings.forEach((mapping) => {
         stmt.run(mapping, (err) => {
           if (err) {
             console.error('Error mapping image to undercategory:', err.message);
+            hasError = true;
           }
 
           pending--;

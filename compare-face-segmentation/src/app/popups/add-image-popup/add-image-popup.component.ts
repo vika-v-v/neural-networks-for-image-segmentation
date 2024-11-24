@@ -77,8 +77,6 @@ export class AddImagePopupComponent implements AddImagePopupObserver {
     );
   }
   
-  
-
   nextSection(): void {
     if (this.shownSection === 'upload-image') {
       this.shownSection = 'add-categories';
@@ -137,7 +135,8 @@ export class AddImagePopupComponent implements AddImagePopupObserver {
   cancel(): void {
     this.hidePopup();
     this.imageUrl = '';
-    this.filteredCategories = [];
+    this.imageLoaded = false;
+    this.filteredCategories = this.allCategories;
     this.selectedUndercategories = [];
     this.searchQuery = '';
     this.shownSection = 'upload-image';
@@ -158,7 +157,7 @@ export class AddImagePopupComponent implements AddImagePopupObserver {
       undercategories: this.selectedUndercategories.map(uc => uc.id) // Send only the IDs of selected undercategories
     };
   
-    this.imageService.saveImage(image).subscribe(
+    this.imageService.saveAndProcessImage(image).subscribe(
       (response) => {
         console.log('Image saved successfully:', response);
         this.cancel(); // Reset the popup after successful save

@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, forkJoin, map, switchMap } from 'rxjs';
+import { NNetworkService } from './nnetwork.service';
 
 @Injectable({
   providedIn: 'root'
@@ -9,7 +10,7 @@ export class ImageService {
 
   baseUrl = 'http://localhost:3000';
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private nnService: NNetworkService) { }
 
   getImages(undercategoryId: number): Observable<any> {
     const url = 'http://localhost:3000/imagesByUndercategory/' + undercategoryId;
@@ -54,6 +55,27 @@ export class ImageService {
 
   removeImage(id: number): Observable<any> {
     return this.http.delete(`${this.baseUrl}/images/remove/` + id);
+  }
+
+  saveAndProcessImage(image: { url: string; undercategories: number[] }): Observable<any> {
+    return this.saveImage(image).pipe(
+      switchMap((saveResponse: { imgId: number }) => {
+        const imgId = saveResponse.imgId;
+        return this.nnService.getNeuralNetworks().pipe(
+          switchMap((networks: any[]) => {
+            const processingRequests = networks.map((network) =>
+              this.processImage(imgId, network.id)
+            );
+            return forkJoin(processingRequests).pipe(
+              map(() => ({
+                message: 'Image saved and processed successfully',
+                imgId,
+              }))
+            );
+          })
+        );
+      })
+    );
   }
   
 }

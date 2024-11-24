@@ -8,7 +8,7 @@ import { Observable } from 'rxjs';
 export class NNetworkService {
   constructor(private http: HttpClient) { }
   
-  getNeuralNetworks() {
-    return this.http.get('http://localhost:3000/neuralNetworks');
+  getNeuralNetworks(): Observable<any[]>  {
+    return this.http.get<any[]>('http://localhost:3000/neuralNetworks');
   }
 }
