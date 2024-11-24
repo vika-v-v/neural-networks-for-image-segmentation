@@ -23,7 +23,10 @@ export class SegmentedImageComponent implements AfterViewInit, OnChanges {
   private highlightedLabel: string | null = null;
   private processedData: any;
 
-  constructor(private imageService: ImageService, private positioningService: ImageInformationPositionService) { }
+  private labelMap: Uint8Array = new Uint8Array(0);
+  private allResourcesLoaded: boolean = false;
+
+  constructor(private imageService: ImageService, private positioningService: ImageInformationPositionService) {}
 
   ngAfterViewInit(): void {
     this.ctx = this.segmentCanvas.nativeElement.getContext('2d', { willReadFrequently: true })!;
@@ -71,10 +74,43 @@ export class SegmentedImageComponent implements AfterViewInit, OnChanges {
         if (loadedImages === totalImages) {
           // All segment images have loaded
           this.drawAllSegments();
+          this.createLabelMap(); // Create label map after all images are loaded
+          this.allResourcesLoaded = true;
         }
       };
     });
   }
+  
+
+  private createLabelMap(): void {
+    const originalWidth = this.segmentCanvas.nativeElement.width;
+    const originalHeight = this.segmentCanvas.nativeElement.height;
+    const scaleFactor = 0.2; // Adjust this value (e.g., 0.2 for 20% of the original size)
+    const width = Math.floor(originalWidth * scaleFactor);
+    const height = Math.floor(originalHeight * scaleFactor);
+    this.labelMap = new Uint8Array(width * height);
+    this.labelMap.fill(255); // Initialize to 255 (no segment)
+  
+    for (let i = 0; i < this.segmentImages.length; i++) {
+      const segmentImage = this.segmentImages[i];
+      const tempCanvas = document.createElement('canvas');
+      tempCanvas.width = width;
+      tempCanvas.height = height;
+      const tempCtx = tempCanvas.getContext('2d', { willReadFrequently: true })!;
+      tempCtx.drawImage(segmentImage, 0, 0, width, height); // Draw at lower resolution
+      const imageData = tempCtx.getImageData(0, 0, width, height).data;
+  
+      // Optimize the loop to check only the alpha channel
+      const len = imageData.length;
+      for (let p = 3; p < len; p += 4) {
+        if (imageData[p] > 0) { // If alpha > 0
+          const index = (p - 3) / 4;
+          this.labelMap[index] = i;
+        }
+      }
+    }
+  }
+  
 
   
 
@@ -96,32 +132,44 @@ export class SegmentedImageComponent implements AfterViewInit, OnChanges {
   
 
   onMouseMove(event: MouseEvent): void {
+    if (!this.allResourcesLoaded) return;
+  
     const rect = this.segmentCanvas.nativeElement.getBoundingClientRect();
     const scaleX = this.segmentCanvas.nativeElement.width / rect.width;
     const scaleY = this.segmentCanvas.nativeElement.height / rect.height;
-
-    // mouse position
-    const x = (event.clientX - rect.left) * scaleX;
-    const y = (event.clientY - rect.top) * scaleY;
-
-    for (let i = 0; i < this.segmentImages.length; i++) {
-      const segmentImage = this.segmentImages[i];
-      if (segmentImage && segmentImage.complete && segmentImage.naturalHeight !== 0) {
+  
+    const scaleFactor = 0.2; // Same as used in createLabelMap
+  
+    // Adjust mouse position for scaled label map
+    const x = Math.floor((event.clientX - rect.left) * scaleX * scaleFactor);
+    const y = Math.floor((event.clientY - rect.top) * scaleY * scaleFactor);
+    const width = Math.floor(this.segmentCanvas.nativeElement.width * scaleFactor);
+    const height = Math.floor(this.segmentCanvas.nativeElement.height * scaleFactor);
+  
+    if (x >= 0 && x < width && y >= 0 && y < height) {
+      const index = y * width + x;
+      const segmentIndex = this.labelMap[index];
+      if (segmentIndex !== 255) { // 255 means no segment
+        this.highlightedLabel = this.processedData[segmentIndex].label;
         this.ctx.clearRect(0, 0, this.segmentCanvas.nativeElement.width, this.segmentCanvas.nativeElement.height);
-        this.ctx.drawImage(segmentImage, 0, 0, this.segmentCanvas.nativeElement.width, this.segmentCanvas.nativeElement.height);
-        const imageData = this.ctx.getImageData(x, y, 1, 1).data;
-        if (imageData[3] > 0) { // If the pixel is not transparent
-          this.highlightedLabel = this.processedData[i].label;
-          this.ctx.clearRect(0, 0, this.segmentCanvas.nativeElement.width, this.segmentCanvas.nativeElement.height);
-          this.ctx.drawImage(this.originalImage, 0, 0, this.segmentCanvas.nativeElement.width, this.segmentCanvas.nativeElement.height);
-          this.ctx.drawImage(segmentImage, 0, 0, this.segmentCanvas.nativeElement.width, this.segmentCanvas.nativeElement.height);
-          break; // Show only the first non-transparent segment
-        }
+        this.ctx.drawImage(this.originalImage, 0, 0, this.segmentCanvas.nativeElement.width, this.segmentCanvas.nativeElement.height);
+        this.ctx.drawImage(this.segmentImages[segmentIndex], 0, 0, this.segmentCanvas.nativeElement.width, this.segmentCanvas.nativeElement.height);
+      } else {
+        this.highlightedLabel = null;
+        this.drawAllSegments();
       }
+    } else {
+      this.highlightedLabel = null;
+      this.drawAllSegments();
     }
-
-    this.positioningService.showInformationPanelForImage(this.segmentCanvas.nativeElement, this.getImageInformation());
+    // Update the information panel
+    this.positioningService.showInformationPanelForImage(
+      this.segmentCanvas.nativeElement,
+      this.getImageInformation()
+    );
   }
+  
+  
 
   getImageInformation(): ImageInformationFormat | null {
 
@@ -141,17 +189,11 @@ export class SegmentedImageComponent implements AfterViewInit, OnChanges {
   }
 
   onMouseLeave(): void {
-    // If we've already drawn all segments, no need to redraw
-    if (this.segmentImages.length === this.processedData.length) {
-      this.positioningService.showInformationPanelForImage(null);
-      return;
-    }
-  
-    // Otherwise, draw all segments
+    if (!this.allResourcesLoaded) return;
+    this.highlightedLabel = null;
     this.drawAllSegments();
     this.positioningService.showInformationPanelForImage(null);
   }
-  
 
   onScroll(): void {
     console.log('scroll');

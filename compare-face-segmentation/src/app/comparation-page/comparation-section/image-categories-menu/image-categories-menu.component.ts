@@ -43,6 +43,10 @@ export class ImageCategoriesMenuComponent implements CategoriesObserver {
     });
   }
 
+  updateImagesInCurrentCategory(): void {
+      
+  }
+
   showDeleteCategoryPopup(category: any) {
     this.popupController.showDeleteCategoryPopup(category);
   }
