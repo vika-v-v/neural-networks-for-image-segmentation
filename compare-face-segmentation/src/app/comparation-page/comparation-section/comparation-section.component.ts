@@ -6,6 +6,8 @@ import { ImageInformationFormat } from '../image-information/image-information-f
 import { NNetworkService } from '../../server-communication/nnetwork.service';
 import { SegmentedImageComponent } from './segmented-image/segmented-image.component';
 import { CommonModule } from '@angular/common';
+import { Subscription } from 'rxjs';
+import { ImageObserver, ImageObserverService } from '../../popups/add-image-popup/image-observer.service';
 
 @Component({
   selector: 'app-comparation-section',
@@ -17,7 +19,7 @@ import { CommonModule } from '@angular/common';
     CommonModule
   ]
 })
-export class ComparationSectionComponent implements OnChanges {
+export class ComparationSectionComponent implements OnChanges, ImageObserver {
   // TODO: confirm deleting the image
   images: any[] = [];
   undercategsWithCache: number[] = [];
@@ -32,7 +34,10 @@ export class ComparationSectionComponent implements OnChanges {
 
   removeImageShownFor: number = -1;
 
-  constructor(private imageService: ImageService, private nNetwors: NNetworkService, private http: HttpClient, private positioningService: ImageInformationPositionService) {
+  private imagesSubscription: Subscription | null = null;
+
+
+  constructor(private imageService: ImageService, private nNetwors: NNetworkService, private http: HttpClient, private positioningService: ImageInformationPositionService, private imageObserverService: ImageObserverService) {
     nNetwors.getNeuralNetworks().subscribe({
       next: (response) => {
         this.neuralNetworks = response;
@@ -40,6 +45,7 @@ export class ComparationSectionComponent implements OnChanges {
       error: (error) => console.error('Error fetching neural networks:', error)
     });
     this.updateVisibleImages();
+    this.imageObserverService.addImageObserver(this);
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -48,10 +54,29 @@ export class ComparationSectionComponent implements OnChanges {
     }
   }
 
-  private updateVisibleImages(): void {
+  ngOnDestroy(): void {
+    if (this.imagesSubscription) {
+      this.imagesSubscription.unsubscribe();
+    }
+  }  
+
+  imageAdded(id: number): void {
+    this.imageService.getImage(id).subscribe({
+      next: (response) => {
+        this.images.push(response);
+      },
+      error: (error) => console.error('Error fetching image:', error)
+    });
+  }
+
+  private updateVisibleImages(forceUpdate = false): void {
     if (this.currentUndercategoryId !== null) {
+      if (this.imagesSubscription) {
+        this.imagesSubscription.unsubscribe();
+      }
+
       // check wether already processed
-      if(this.undercategsWithCache.includes(this.currentUndercategoryId)) {
+      if(this.undercategsWithCache.includes(this.currentUndercategoryId) && !forceUpdate) {
         this.images.forEach(image => {
           image.visible = image.undercategoryId === this.currentUndercategoryId;
         });
@@ -59,7 +84,7 @@ export class ComparationSectionComponent implements OnChanges {
       }
 
       // the category wasn't selected before
-      const sub = this.imageService.getImages(this.currentUndercategoryId).subscribe({
+      this.imagesSubscription = this.imageService.getImages(this.currentUndercategoryId).subscribe({
         next: (response) => {
           this.undercategsWithCache.push(this.currentUndercategoryId);
 

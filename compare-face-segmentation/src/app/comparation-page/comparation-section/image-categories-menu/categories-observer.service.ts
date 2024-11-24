@@ -2,8 +2,6 @@ import { Injectable } from '@angular/core';
 
 export interface CategoriesObserver {
     updateCategories(): void;
-
-    updateImagesInCurrentCategory(): void;
 }
 
 @Injectable({
@@ -18,9 +16,5 @@ export class CategoriesObserverService {
 
   updateCategories(): void {
     this.categoriesObservers.forEach(observer => observer.updateCategories());
-  }
-
-  updateImagesInCurrentCategory(): void {
-    this.categoriesObservers.forEach(observer => observer.updateImagesInCurrentCategory());
   }
 }

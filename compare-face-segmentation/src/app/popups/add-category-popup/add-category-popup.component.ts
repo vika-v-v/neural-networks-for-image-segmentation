@@ -20,7 +20,7 @@ import { CategoriesObserverService } from '../../comparation-page/comparation-se
 export class AddCategoryPopupComponent implements AddEditCategoryPopupObserver {
   // TODO: after a lot of times adding and removing the undercategories, there is some problem with the server, fix it
   popupVisible: boolean = false;
-  undercategories: {name: string, currentlyEditing: boolean}[] = [];
+  undercategories: {id?: number, name: string, currentlyEditing: boolean}[] = [];
   categoryName: string = '';
   editingMode: boolean = false;
   categoryId: number = -1;
@@ -34,9 +34,11 @@ export class AddCategoryPopupComponent implements AddEditCategoryPopupObserver {
     this.editingMode = false;
   }
 
+  // In AddCategoryPopupComponent
   showEditCategoryPopup(category: any): void {
     this.categoryName = category.name;
     this.undercategories = category.undercategories.map((uc: any) => ({
+      id: uc.id, // Include the undercategory ID
       name: uc.name,
       currentlyEditing: false
     }));
@@ -51,8 +53,8 @@ export class AddCategoryPopupComponent implements AddEditCategoryPopupObserver {
   }
 
   addUndercategory(): void {
-    this.undercategories.push({ name: 'New Undercategory', currentlyEditing: true });
-  }
+    this.undercategories.push({name: 'New Undercategory', currentlyEditing: true });
+  }  
 
   editUndercategory(undercateg: { name: string; currentlyEditing: boolean }): void {
     undercateg.currentlyEditing = true;
@@ -80,6 +82,7 @@ export class AddCategoryPopupComponent implements AddEditCategoryPopupObserver {
       categ_name: this.categoryName,
       order_in_list: 1, // Set a default order or use a dynamic value
       undercategories: this.undercategories.map((uc, index) => ({
+        id: uc.id,
         name: uc.name,
         order_in_list: index + 1
       }))

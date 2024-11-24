@@ -8,6 +8,8 @@ router.post('/add', (req, res) => {
     if (!url || !undercategories || !Array.isArray(undercategories)) {
       return res.status(400).json({ error: 'Missing or invalid fields' });
     }
+
+    console.log('Adding image...');
   
     const sql = `INSERT INTO Image (img_url, img_origin) VALUES (?, ?)`;
     db.run(sql, [url, 'user-upload'], function (err) {

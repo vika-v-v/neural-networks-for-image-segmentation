@@ -13,8 +13,8 @@ const getRandomSegment = require('./apiEndpoints/getRandomSegment');
 const saveRemoveImage = require('./apiEndpoints/saveRemoveImage');
 const randomImage = require('./apiEndpoints/randomImage');
 
-app.use(bodyParser.json({ limit: '10mb' })); // Adjust the limit as needed
-app.use(bodyParser.urlencoded({ limit: '10mb', extended: true }));
+app.use(bodyParser.json({ limit: '1000mb' })); // Adjust the limit as needed
+app.use(bodyParser.urlencoded({ limit: '1000mb', extended: true }));
 app.use(cors());
 app.use(express.json());
 

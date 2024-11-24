@@ -22,7 +22,7 @@ export class CategoryService {
     return this.http.post<any>(url, category);
   }
 
-  editCategory(categoryId: number, category: { categ_name: string; order_in_list: number; undercategories: { name: string; order_in_list: number; }[] }): Observable<any> {
+  editCategory(categoryId: number, category: { categ_name: string; order_in_list: number; undercategories: { id?: number; name: string; order_in_list: number; }[] }): Observable<any> {
     const url = 'http://localhost:3000/categories/' + categoryId;
     return this.http.put<any>(url, category);
   }

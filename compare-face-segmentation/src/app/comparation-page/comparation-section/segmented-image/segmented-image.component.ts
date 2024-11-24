@@ -3,6 +3,7 @@ import { ImageService } from '../../../server-communication/image.service';
 import { ImageInformationPositionService } from '../../image-information/image-information-position.service';
 import { ImageInformationFormat } from '../../image-information/image-information-format.class';
 import { CommonModule } from '@angular/common';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-segmented-image',
@@ -26,6 +27,10 @@ export class SegmentedImageComponent implements AfterViewInit, OnChanges {
   private labelMap: Uint8Array = new Uint8Array(0);
   private allResourcesLoaded: boolean = false;
 
+  private labelsSubscription: Subscription | null = null;
+  private isActive: boolean = true; // To track if the component is still active
+
+
   constructor(private imageService: ImageService, private positioningService: ImageInformationPositionService) {}
 
   ngAfterViewInit(): void {
@@ -34,23 +39,53 @@ export class SegmentedImageComponent implements AfterViewInit, OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['image'] && this.image) {
-      this.imageService.getLabelsWithSections(this.neuralNetwork.id, this.image.img_id).subscribe({
+      // Unsubscribe from previous subscription if it exists
+      if (this.labelsSubscription) {
+        this.labelsSubscription.unsubscribe();
+      }
+  
+      this.labelsSubscription = this.imageService.getLabelsWithSections(this.neuralNetwork.id, this.image.img_id).subscribe({
         next: (result: any) => {
+          // Check if the component is still active
+          if (!this.isActive) return;
+  
           this.image.processedData = result;
           this.processedData = result;
           this.loadOriginalImage();
         },
         error: (error: any) => console.error('Error fetching image data:', error)
       });
-
     }
+  }  
+
+  ngOnDestroy(): void {
+    this.isActive = false;
+    if (this.labelsSubscription) {
+      this.labelsSubscription.unsubscribe();
+    }
+    // Attempt to cancel image loading
+    if (this.originalImage) {
+      this.originalImage.onload = null;
+      this.originalImage.src = '';
+    }
+    // Similarly for segment images
+    this.segmentImages.forEach((img) => {
+      if (img) {
+        img.onload = null;
+        img.src = '';
+      }
+    });
   }
+  
+  
 
   private loadOriginalImage(): void {
     if (this.image && this.image.image) {
       this.originalImage = new Image();
       this.originalImage.src = this.image.image;
       this.originalImage.onload = () => {
+        if (!this.isActive) return;
+  
         this.segmentCanvas.nativeElement.width = this.originalImage.naturalWidth;
         this.segmentCanvas.nativeElement.height = this.originalImage.naturalHeight;
         this.ctx.drawImage(this.originalImage, 0, 0, this.originalImage.naturalWidth, this.originalImage.naturalHeight);
@@ -59,7 +94,7 @@ export class SegmentedImageComponent implements AfterViewInit, OnChanges {
         }
       };
     }
-  }
+  }  
 
   private loadSegmentImages(): void {
     let loadedImages = 0;
@@ -69,6 +104,8 @@ export class SegmentedImageComponent implements AfterViewInit, OnChanges {
       const segmentImage = new Image();
       segmentImage.src = 'data:image/jpeg;base64,' + segment.base64;
       segmentImage.onload = () => {
+        if (!this.isActive) return;
+  
         this.segmentImages[index] = segmentImage;
         loadedImages++;
         if (loadedImages === totalImages) {

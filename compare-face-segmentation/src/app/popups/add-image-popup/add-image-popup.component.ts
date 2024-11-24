@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { CategoryService } from '../../server-communication/categories.service';
 import { FormsModule } from '@angular/forms';
 import { ImageService } from '../../server-communication/image.service';
+import { ImageObserverService } from './image-observer.service';
 
 @Component({
   selector: 'app-add-image-popup',
@@ -28,13 +29,14 @@ export class AddImagePopupComponent implements AddImagePopupObserver {
   selectedUndercategories: { id: number; name: string }[] = [];
   searchQuery: string = '';
 
-  constructor(private popupController: PopupController, private categoryService: CategoryService, private imageService: ImageService) {
+  constructor(private popupController: PopupController, private categoryService: CategoryService, private imageService: ImageService, private imageObserverS: ImageObserverService) {
     this.popupController.addAddImagePopupObserver(this);
     this.loadCategories();
   }
 
   showAddImagePopup(): void {
     this.popupVisible = true;
+    this.loadCategories();
   }
 
   hidePopup(): void {
@@ -156,16 +158,19 @@ export class AddImagePopupComponent implements AddImagePopupObserver {
       url: this.imageUrl,
       undercategories: this.selectedUndercategories.map(uc => uc.id) // Send only the IDs of selected undercategories
     };
-  
+
+    
     this.imageService.saveAndProcessImage(image).subscribe(
       (response) => {
         console.log('Image saved successfully:', response);
-        this.cancel(); // Reset the popup after successful save
+        this.imageObserverS.imageAdded(response.imgId);
       },
       (error) => {
         console.error('Error saving image:', error);
       }
-    );
+      );
+
+    this.cancel(); // Reset the popup
   }
   
   
