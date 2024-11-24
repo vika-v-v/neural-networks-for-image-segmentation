@@ -59,15 +59,41 @@ export class SegmentedImageComponent implements AfterViewInit, OnChanges {
   }
 
   private loadSegmentImages(): void {
+    let loadedImages = 0;
+    const totalImages = this.processedData.length;
+  
     this.processedData.forEach((segment: any, index: any) => {
       const segmentImage = new Image();
       segmentImage.src = 'data:image/jpeg;base64,' + segment.base64;
       segmentImage.onload = () => {
         this.segmentImages[index] = segmentImage;
-        this.onMouseLeave();
+        loadedImages++;
+        if (loadedImages === totalImages) {
+          // All segment images have loaded
+          this.drawAllSegments();
+        }
       };
     });
   }
+
+  
+
+  private drawAllSegments(): void {
+    // Clear the canvas
+    this.ctx.clearRect(0, 0, this.segmentCanvas.nativeElement.width, this.segmentCanvas.nativeElement.height);
+  
+    // Draw the original image
+    this.ctx.drawImage(this.originalImage, 0, 0, this.segmentCanvas.nativeElement.width, this.segmentCanvas.nativeElement.height);
+  
+    // Draw all segment images
+    for (let i = 0; i < this.segmentImages.length; i++) {
+      const segmentImage = this.segmentImages[i];
+      if (segmentImage && segmentImage.complete && segmentImage.naturalHeight !== 0) {
+        this.ctx.drawImage(segmentImage, 0, 0, this.segmentCanvas.nativeElement.width, this.segmentCanvas.nativeElement.height);
+      }
+    }
+  }  
+  
 
   onMouseMove(event: MouseEvent): void {
     const rect = this.segmentCanvas.nativeElement.getBoundingClientRect();
@@ -115,18 +141,17 @@ export class SegmentedImageComponent implements AfterViewInit, OnChanges {
   }
 
   onMouseLeave(): void {
-    this.ctx.clearRect(0, 0, this.segmentCanvas.nativeElement.width, this.segmentCanvas.nativeElement.height);
-    this.ctx.drawImage(this.originalImage, 0, 0, this.segmentCanvas.nativeElement.width, this.segmentCanvas.nativeElement.height);
-
-    for (let i = 0; i < this.segmentImages.length; i++) {
-      const segmentImage = this.segmentImages[i];
-      if (segmentImage && segmentImage.complete && segmentImage.naturalHeight !== 0) {
-        this.ctx.drawImage(segmentImage, 0, 0, this.segmentCanvas.nativeElement.width, this.segmentCanvas.nativeElement.height);
-      }
+    // If we've already drawn all segments, no need to redraw
+    if (this.segmentImages.length === this.processedData.length) {
+      this.positioningService.showInformationPanelForImage(null);
+      return;
     }
-
+  
+    // Otherwise, draw all segments
+    this.drawAllSegments();
     this.positioningService.showInformationPanelForImage(null);
   }
+  
 
   onScroll(): void {
     console.log('scroll');

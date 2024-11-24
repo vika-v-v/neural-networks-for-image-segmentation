@@ -27,8 +27,6 @@ async function processImageWithModel(imageUrl) {
 
         const data = await response.json();
 
-        console.log('Data received from Python backend:', data);
-
         return data;
     } catch (error) {
         console.error('Error:', error);

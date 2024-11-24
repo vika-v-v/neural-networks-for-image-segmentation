@@ -72,10 +72,6 @@ async function callModelProcessingFactoryWithPreparations(
   const imageUrl = await databaseOperations.fetchImageUrlById(imgId);
   const segments = await callProcessImageWithModel(neuralNetworkId, imageUrl);
 
-  console.log('Segments received:', segments);
-  console.log('Type of segments:', typeof segments);
-  console.log('Is segments an array?', Array.isArray(segments));
-
   if (!Array.isArray(segments)) {
     console.error('Expected segments to be an array, but got:', segments);
     throw new Error('Invalid segments data received from model processing');

@@ -30,7 +30,7 @@ export class ComparationSectionComponent implements OnChanges {
   currentHtmlElement: HTMLElement | null = null;
   currentImageInformation: ImageInformationFormat | null = null;
 
-  removeImageShown: boolean = false;
+  removeImageShownFor: number = -1;
 
   constructor(private imageService: ImageService, private nNetwors: NNetworkService, private http: HttpClient, private positioningService: ImageInformationPositionService) {
     nNetwors.getNeuralNetworks().subscribe({
@@ -144,14 +144,17 @@ export class ComparationSectionComponent implements OnChanges {
   }
 
   removeImage(imageId: number): void {
+    const index = this.images.findIndex(image => image.img_id === imageId);
+    if (index !== -1) {
+      this.images.splice(index, 1);
+    }
+
     this.imageService.removeImage(imageId).subscribe({
       next: (response) => {
-        this.updateVisibleImages();
+        console.log('Image removed:', response);
       },
       error: (error) => console.error('Error deleting:', error)
     });
-    this.updateVisibleImages();
-  }
+  }  
 
-  
 }

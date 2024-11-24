@@ -40,7 +40,6 @@ class SegformerClothesModel:
         if not url:
             print("no image data")
             return
-        
         elif url.startswith('http'):
             # It's a URL
             response = requests.get(url, stream=True)
