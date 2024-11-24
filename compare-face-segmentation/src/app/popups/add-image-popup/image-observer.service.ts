@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 
 export interface ImageObserver {
     imageAdded(id: number): void;
+
+    imageUpdated(id: number): void;
 }
 
 @Injectable({
@@ -16,5 +18,9 @@ export class ImageObserverService {
 
   imageAdded(id: number): void {
     this.imageObservers.forEach(observer => observer.imageAdded(id));
+  }
+
+  imageUpdated(id: number): void {
+    this.imageObservers.forEach(observer => observer.imageUpdated(id));
   }
 }

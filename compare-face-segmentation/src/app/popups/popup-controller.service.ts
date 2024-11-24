@@ -5,8 +5,9 @@ export interface DeletePopupObserver {
     // later add show image delete popup
 }
 
-export interface AddImagePopupObserver {
+export interface AddEditImagePopupObserver {
     showAddImagePopup(): void;
+    showEditImagePopup(imageId: number): void;
 }
 
 export interface AddEditCategoryPopupObserver {
@@ -20,7 +21,7 @@ export interface AddEditCategoryPopupObserver {
 export class PopupController {
 
     deletePopupObserver!: DeletePopupObserver;
-    addImagePopupObserver!: AddImagePopupObserver;
+    addImagePopupObserver!: AddEditImagePopupObserver;
     addCategoryPopupObserver!: AddEditCategoryPopupObserver;
 
     addDeletePopupObserver(observer: DeletePopupObserver): void {
@@ -31,12 +32,16 @@ export class PopupController {
         this.deletePopupObserver.showDeleteCategoryPopup(category);
     }
 
-    addAddImagePopupObserver(observer: AddImagePopupObserver): void {
+    addAddImagePopupObserver(observer: AddEditImagePopupObserver): void {
         this.addImagePopupObserver = observer;
     }
 
     showAddImagePopup(): void {
         this.addImagePopupObserver.showAddImagePopup();
+    }
+
+    showEditImagePopup(imageId: number): void {
+        this.addImagePopupObserver.showEditImagePopup(imageId);
     }
 
     addAddCategoryPopupObserver(observer: AddEditCategoryPopupObserver): void {

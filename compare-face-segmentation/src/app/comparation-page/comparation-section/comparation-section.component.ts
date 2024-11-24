@@ -8,6 +8,7 @@ import { SegmentedImageComponent } from './segmented-image/segmented-image.compo
 import { CommonModule } from '@angular/common';
 import { Subscription } from 'rxjs';
 import { ImageObserver, ImageObserverService } from '../../popups/add-image-popup/image-observer.service';
+import { PopupController } from '../../popups/popup-controller.service';
 
 @Component({
   selector: 'app-comparation-section',
@@ -37,7 +38,7 @@ export class ComparationSectionComponent implements OnChanges, ImageObserver {
   private imagesSubscription: Subscription | null = null;
 
 
-  constructor(private imageService: ImageService, private nNetwors: NNetworkService, private http: HttpClient, private positioningService: ImageInformationPositionService, private imageObserverService: ImageObserverService) {
+  constructor(private imageService: ImageService, private nNetwors: NNetworkService, private http: HttpClient, private positioningService: ImageInformationPositionService, private imageObserverService: ImageObserverService, private popupController: PopupController) {
     nNetwors.getNeuralNetworks().subscribe({
       next: (response) => {
         this.neuralNetworks = response;
@@ -67,6 +68,10 @@ export class ComparationSectionComponent implements OnChanges, ImageObserver {
       },
       error: (error) => console.error('Error fetching image:', error)
     });
+  }
+
+  imageUpdated(id: number): void {
+    this.updateVisibleImages(true);
   }
 
   private updateVisibleImages(forceUpdate = false): void {
@@ -180,6 +185,10 @@ export class ComparationSectionComponent implements OnChanges, ImageObserver {
       },
       error: (error) => console.error('Error deleting:', error)
     });
+  }  
+
+  editImage(imageId: number): void {
+    this.popupController.showEditImagePopup(imageId);
   }  
 
 }

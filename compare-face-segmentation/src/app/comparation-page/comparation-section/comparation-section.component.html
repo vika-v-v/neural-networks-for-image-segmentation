@@ -21,7 +21,10 @@
               (mousemove)="onMouseMove($event, image.img_id, -1)"
               (mouseleave)="onMouseLeave()"
             />
-            <img *ngIf="removeImageShownFor == image.img_id" src="assets/9027022_trash_thin_icon.svg" alt="Remove" (click)="removeImage(image.img_id)" class="icon" id="remove-image-icon" />
+            <div *ngIf="removeImageShownFor == image.img_id" id="image-actions">
+              <img src="assets/9027022_trash_thin_icon.svg" alt="Remove" (click)="removeImage(image.img_id)" class="icon" id="remove-image-icon" />
+              <img src="assets/9026700_pencil_simple_thin_icon.svg" alt="Edit" (click)="editImage(image.img_id)" class="icon" id="edit-image-icon" />
+            </div>
           </td>
           <td *ngFor="let network of neuralNetworks" class="column-same-width image-container">
               <app-segmented-image [image]="image" [neuralNetwork]="network" [style.height.px]="image.height"></app-segmented-image>

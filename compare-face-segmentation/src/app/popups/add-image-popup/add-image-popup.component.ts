@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { PopupController, AddImagePopupObserver } from '../popup-controller.service';
+import { PopupController, AddEditImagePopupObserver } from '../popup-controller.service';
 import { CommonModule } from '@angular/common';
 import { CategoryService } from '../../server-communication/categories.service';
 import { FormsModule } from '@angular/forms';
@@ -16,8 +16,8 @@ import { ImageObserverService } from './image-observer.service';
   templateUrl: './add-image-popup.component.html',
   styleUrl: './add-image-popup.component.css'
 })
-export class AddImagePopupComponent implements AddImagePopupObserver {
-  // TODO: add the possibility to remove an andded image
+export class AddImagePopupComponent implements AddEditImagePopupObserver {
+  // TODO: add the possibility to remove the added image
   // TODO: save origin, tags and notes
   popupVisible: boolean = false;
   imageLoaded: boolean = false;
@@ -29,15 +29,60 @@ export class AddImagePopupComponent implements AddImagePopupObserver {
   selectedUndercategories: { id: number; name: string }[] = [];
   searchQuery: string = '';
 
+  editingMode: boolean = false;
+  imageId: number | null = null;
+  originalImageUrl: string = '';
+
   constructor(private popupController: PopupController, private categoryService: CategoryService, private imageService: ImageService, private imageObserverS: ImageObserverService) {
     this.popupController.addAddImagePopupObserver(this);
     this.loadCategories();
   }
 
   showAddImagePopup(): void {
+    this.editingMode = false;
     this.popupVisible = true;
     this.loadCategories();
   }
+
+  // TODO: make this better: add origin, tags, notes
+  showEditImagePopup(imageId: number): void {
+    this.imageService.getImage(imageId).subscribe(
+      (imageData) => {
+        this.imageId = imageId;
+        this.editingMode = true;
+  
+        // Set the image URL for preview
+        this.imageUrl = imageData.image.img_url;
+        this.originalImageUrl = imageData.image.img_url; // Store the original URL
+        this.imageLoaded = true;
+  
+        // Set the selected undercategories
+        this.selectedUndercategories = imageData.undercategories.map((uc: any) => {
+          const categoryName = uc.categ_name;
+          return {
+            id: uc.ucateg_id,
+            name: `${categoryName}.${uc.ucateg_name}`
+          };
+        });
+  
+        // Set other properties if applicable (e.g., origin, tags, notes)
+        // this.origin = imageData.image.img_origin;
+  
+        this.popupVisible = true;
+        this.shownSection = 'add-categories';
+  
+        // Load categories if necessary
+        if (!this.allCategories || this.allCategories.length === 0) {
+          this.loadCategories();
+        }
+  
+        this.filteredCategories = [...this.allCategories];
+      },
+      (error) => {
+        console.error('Error fetching image data for editing:', error);
+      }
+    );
+  }  
 
   hidePopup(): void {
     this.popupVisible = false;
@@ -142,6 +187,8 @@ export class AddImagePopupComponent implements AddImagePopupObserver {
     this.selectedUndercategories = [];
     this.searchQuery = '';
     this.shownSection = 'upload-image';
+    this.editingMode = false;
+    this.imageId = null;
   }
 
   saveImage(): void {
@@ -160,18 +207,31 @@ export class AddImagePopupComponent implements AddImagePopupObserver {
     };
 
     
-    this.imageService.saveAndProcessImage(image).subscribe(
-      (response) => {
-        console.log('Image saved successfully:', response);
-        this.imageObserverS.imageAdded(response.imgId);
-      },
-      (error) => {
-        console.error('Error saving image:', error);
-      }
-      );
-
-    this.cancel(); // Reset the popup
+    if (this.editingMode && this.imageId !== null) {
+      // Update existing image
+      
+        this.imageService.updateAndProcessImage(this.imageId, image).subscribe(
+          (response) => {
+            console.log('Image updated successfully:', response);
+            this.imageObserverS.imageUpdated(this.imageId!);
+            this.cancel(); // Reset the popup
+          },
+          (error) => {
+            console.error('Error updating image:', error);
+          }
+        );
+      
+    } else {
+      // Save new image
+      this.imageService.saveAndProcessImage(image).subscribe(
+        (response) => {
+          console.log('Image saved successfully:', response);
+          this.imageObserverS.imageAdded(response.imgId);
+          this.cancel(); // Reset the popup
+        },
+        (error) => {
+          console.error('Error saving image:', error);
+        }
+      );}
   }
-  
-  
 }

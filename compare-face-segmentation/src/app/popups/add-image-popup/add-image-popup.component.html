@@ -85,7 +85,7 @@
         </div>
 
         <div id="control-elements">
-            <img (click)="previousSection()" [src]="shownSection != 'upload-image' ? 'assets/9026267_caret_left_thin_icon.svg' : 'assets/placeholder-caret-right-left.svg'"/>
+            <img (click)="previousSection()" [src]="editingMode && shownSection == 'add-further-information' || !editingMode && shownSection != 'upload-image' ? 'assets/9026267_caret_left_thin_icon.svg' : 'assets/placeholder-caret-right-left.svg'"/>
             <img (click)="nextSection()" [src]="imageLoaded && shownSection != 'add-further-information' ? 'assets/9026425_caret_right_thin_icon.svg' : 'assets/placeholder-caret-right-left.svg'"/>
         </div>
     </div>  

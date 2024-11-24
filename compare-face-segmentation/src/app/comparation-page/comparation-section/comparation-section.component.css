@@ -53,17 +53,23 @@ th, td {
     overflow: hidden;
 }
 
-#remove-image-icon {
+#image-actions {
     position: absolute;
     bottom: 10px;
     left: 10px;
-    width: 30px;
-    height: 30px;
-    margin: 5px;
-    cursor: pointer;
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
     z-index: 100;
-    border: none;
     background-color: #f6f5f2;
     border-radius: 5px;
     padding: 3px;
+}
+
+#remove-image-icon, #edit-image-icon {
+    width: 25px;
+    height: 25px;
+    margin: 5px;
+    cursor: pointer;
+    border: none;
   }

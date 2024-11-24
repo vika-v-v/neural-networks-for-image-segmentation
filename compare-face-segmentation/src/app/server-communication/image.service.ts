@@ -77,5 +77,30 @@ export class ImageService {
       })
     );
   }
+
+  updateImage(imageId: number, image: { url: string; undercategories: number[] }): Observable<any> {
+    return this.http.put(`${this.baseUrl}/images/update/${imageId}`, image);
+  }
+  
+  updateAndProcessImage(imageId: number, image: { url: string; undercategories: number[] }): Observable<any> {
+    return this.updateImage(imageId, image).pipe(
+      switchMap((updateResponse: any) => {
+        return this.nnService.getNeuralNetworks().pipe(
+          switchMap((networks: any[]) => {
+            const processingRequests = networks.map((network) =>
+              this.processImage(imageId, network.id)
+            );
+            return forkJoin(processingRequests).pipe(
+              map(() => ({
+                message: 'Image updated and processed successfully',
+                imageId,
+              }))
+            );
+          })
+        );
+      })
+    );
+  }
+  
   
 }
