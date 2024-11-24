@@ -1,4 +1,8 @@
 const sharp = require("sharp");
+const fs = require('fs');
+const os = require('os');
+const path = require('path');
+
 
 let fetch;
 let pipeline, env;
@@ -43,12 +47,34 @@ async function processImageWithModel(imageInput) {
     "jonathandinu/face-parsing"
   );
 
-  const imageDataUrl = await getImageDataUrl(imageInput);
+  // Handle image input
+  let tempFilePath = null;
+  if (typeof imageInput === 'string') {
+    if (imageInput.startsWith('data:image')) {
+      // Extract base64 data
+      const base64Data = imageInput.split(',')[1];
+      const buffer = Buffer.from(base64Data, 'base64');
+      tempFilePath = path.join(os.tmpdir(), `image-${Date.now()}.png`);
+      fs.writeFileSync(tempFilePath, buffer);
+      imageInput = tempFilePath;
+    } else if (imageInput.startsWith('http')) {
+      // It's a URL, use it directly
+      // No change needed
+    } else {
+      // Assume it's base64 data without data URL prefix
+      const buffer = Buffer.from(imageInput, 'base64');
+      tempFilePath = path.join(os.tmpdir(), `image-${Date.now()}.png`);
+      fs.writeFileSync(tempFilePath, buffer);
+      imageInput = tempFilePath;
+    }
+  } else {
+    throw new Error('Invalid input type: expected a string');
+  }
 
   let output;
   try {
-    // Pass imageInput directly to the model
-    output = await model(imageDataUrl);
+    // Pass the Buffer or URL directly to the model
+    output = await model(imageInput);
   } catch (error) {
     console.error("Error calling the segmentation model:", error);
     throw error;
