@@ -23,16 +23,36 @@ router.post('/add', (req, res) => {
   
       // Insert all mappings
       const stmt = db.prepare(mappingSql);
+
+      let pending = mappings.length;
+      if (pending === 0) {
+        // If there are no mappings, finalize the statement and send the response
+        stmt.finalize();
+        return res.status(201).json({ message: 'Image saved successfully', imgId });
+      }
+
       mappings.forEach((mapping) => {
         stmt.run(mapping, (err) => {
           if (err) {
             console.error('Error mapping image to undercategory:', err.message);
           }
+
+          pending--;
+
+          if (pending === 0) {
+            stmt.finalize((err) => {
+              if (err) {
+                console.error('Error finalizing statement:', err.message);
+                return res.status(500).json({ error: 'Error finalizing statement' });
+              }
+              if (hasError) {
+                return res.status(500).json({ error: 'Error saving image mappings' });
+              }
+              res.status(201).json({ message: 'Image saved successfully', imgId });
+            }); 
+          }
         });
       });
-      stmt.finalize();
-  
-      res.status(201).json({ message: 'Image saved successfully', imgId });
     });
   });  
 

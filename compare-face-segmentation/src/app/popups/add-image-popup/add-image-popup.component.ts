@@ -151,7 +151,6 @@ export class AddImagePopupComponent implements AddImagePopupObserver {
   
     if (this.selectedUndercategories.length === 0) {
       console.error('No undercategories selected.');
-      return;
     }
   
     const image = {
