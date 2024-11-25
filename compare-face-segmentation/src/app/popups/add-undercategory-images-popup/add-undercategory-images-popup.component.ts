@@ -72,7 +72,6 @@ export class AddUndercategoryImagesPopupComponent implements ChangeUndercategory
     this.undercategoryId = null;
     this.undercategoryName = '';
     this.undercategoryImages = [];
-    this.allImages = [];
     this.selectedImages = {};
   }
 
