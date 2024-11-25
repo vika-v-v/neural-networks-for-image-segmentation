@@ -2,10 +2,12 @@
 
 A web application for comparing various AI models for image segmentation to help select the most suitable model for specific purposes.
 
+<br>
 ## Overview
 
 This platform enables users to compare different AI models for image segmentation, facilitating the selection of the most appropriate model based on specific requirements. One of the primary use cases is the comparison between two images to determine whether they depict the same person, a critical functionality for projects like <a href="https://www.hsbi.de/wirtschaft/forschung/arbeitsgruppe-angewandte-ki/adrian">ADRIAN</a>.
 
+<br>
 ## Demo and screenshots:
 <img src="./docu/images/homepage_screenshot_no_video.png" alt="Homepage">
 <br>
@@ -13,6 +15,7 @@ This platform enables users to compare different AI models for image segmentatio
 <br>
 <a href="https://www.youtube.com/watch?v=HCTjcWAPbTU?autoplay=1" style="max-width: 80vw"><img src="./docu/images/homepage_screenshot.png" alt="Demo login" style="max-width:80%;"></a>
 
+<br>
 ## Features
 <ul>
 <li><b>Model Comparison:</b> Compare multiple AI models side by side to evaluate their performance on image segmentation tasks. Models which were used are:
@@ -28,6 +31,7 @@ This platform enables users to compare different AI models for image segmentatio
 <li><b>Extensible Architecture:</b> Designed to easily incorporate additional AI models, allowing for continuous expansion and updates.</li>
 </ul>
 
+<br>
 ## Architecture
 <ul>
 <li><b>Frontend: Angular</b> – Provides a dynamic and responsive user interface.</li>
@@ -37,10 +41,12 @@ This platform enables users to compare different AI models for image segmentatio
 </ul>
 You can find a sceme for the architecture under <a href='./docu/Architecture.pdf'>docu/Architecture.pdf</a>.
 
+<br>
 ## Getting Started
 
 To get started with the project, please refer to the <a href='./docu/GETTING_STARTED.md'>GETTING_STARTED</a> guide, which provides detailed instructions on setting up the development environment, installing dependencies, and running the application locally.
 
+<br>
 ## More documentation
 
 There is a folder docu in this repository, which includes some documentation, to be specific:
@@ -52,6 +58,7 @@ There is a folder docu in this repository, which includes some documentation, to
   - <a href='-/docu/Architecture.pdf'>Architecture.pdf</a> (the architecture of the website depicted in a sceme)
 
 
+<br>
 ## Contributing
 
 Contributions are welcome! Please follow these steps to contribute:
