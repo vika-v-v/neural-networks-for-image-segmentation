@@ -1,3 +1,7 @@
+# Adding new popup
+
+Popups are any windows that are shown above the website, f. e. adding/editing images or categories. If you need to add another one, follow theese steps:
+
 1) create the popup in the folder popups, develop the popup
 2) in popups/popup-controller.service.ts, add interface to define the function that would open the popup:
 export interface deletePopupObserver {

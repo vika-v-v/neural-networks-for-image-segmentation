@@ -1,4 +1,8 @@
 # How to add a neural network
+
+Adding a new neural network is not hard from the architectural point of view, but you need to take into account that every new neural network has another output format, and your api-point should convert this responce to base64 segments which are readable by the frontend. 
+This is the guide on how to add a new neural network:
+
 1) Add Neural Network to the Database by calling the request like:
 <code><pre>
 INSERT INTO Neural_Network (nn_name) 
