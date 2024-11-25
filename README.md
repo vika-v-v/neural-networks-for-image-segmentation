@@ -9,7 +9,7 @@ This platform enables users to compare different AI models for image segmentatio
 ## Demo and screenshots:
 <img src="/docu/homepage_screenshot_no_video.png" alt="Homepage">
 <br>
-<img src="/docu/screenshot_comparation_page.jpeg" alt="Comparation page">
+<img src="/docu/comparation_page_screenshot.jpeg" alt="Comparation page">
 <br>
 <a href="https://www.youtube.com/watch?v=HCTjcWAPbTU?autoplay=1" style="max-width: 80vw"><img src="/docu/homepage_screenshot.png" alt="Demo login" style="max-width:80%;"></a>
 
