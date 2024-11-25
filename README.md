@@ -7,7 +7,7 @@ A web application for comparing various AI models for image segmentation to help
 This platform enables users to compare different AI models for image segmentation, facilitating the selection of the most appropriate model based on specific requirements. One of the primary use cases is the comparison between two images to determine whether they depict the same person, a critical functionality for projects like ADRIAN (https://www.hsbi.de/wirtschaft/forschung/arbeitsgruppe-angewandte-ki/adrian).
 
 ## Demo:
-<a href="https://www.youtube.com/watch?v=h4npzaNzisw?autoplay=1" style="max-width: 80vw"><img src="/wertpapieranlagen/src/assets/preview/demo_login_videopreview.png" alt="Demo login" style="max-width:80%;"></a>
+<a href="https://www.youtube.com/watch?v=h4npzaNzisw?autoplay=1" style="max-width: 80vw"><img src="/docu/homepage_screenshot.png" alt="Demo login" style="max-width:80%;"></a>
 
 ## Features
 <ul>
