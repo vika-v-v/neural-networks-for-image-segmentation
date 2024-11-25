@@ -15,6 +15,10 @@ export interface AddEditCategoryPopupObserver {
     showEditCategoryPopup(category: any): void;
 }
 
+export interface ChangeUndercategoryImagesPopupObserver {
+    showChangeUndercategoryImagesPopup(undercategoryId: number): void;
+}
+
 @Injectable({
   providedIn: 'root', // This makes the service available globally
 })
@@ -23,6 +27,11 @@ export class PopupController {
     deletePopupObserver!: DeletePopupObserver;
     addImagePopupObserver!: AddEditImagePopupObserver;
     addCategoryPopupObserver!: AddEditCategoryPopupObserver;
+    changeUndercategoryImagesPopupObserver!: ChangeUndercategoryImagesPopupObserver;
+
+    addChangeUndercategoryImagesPopupObserver(observer: ChangeUndercategoryImagesPopupObserver): void {
+        this.changeUndercategoryImagesPopupObserver = observer;
+    }
 
     addDeletePopupObserver(observer: DeletePopupObserver): void {
         this.deletePopupObserver = observer;
@@ -51,5 +60,9 @@ export class PopupController {
     showAddOrEditCategoryPopup(category?: any): void {
         if(!category) this.addCategoryPopupObserver.showAddCategoryPopup();
         else          this.addCategoryPopupObserver.showEditCategoryPopup(category);
+    }
+
+    showChangeUndercategoryImagesPopup(undercategoryId: number): void {
+        this.changeUndercategoryImagesPopupObserver.showChangeUndercategoryImagesPopup(undercategoryId);
     }
 }

@@ -12,6 +12,7 @@ const imageByIdRouter = require('./apiEndpoints/imageById');
 const getRandomSegment = require('./apiEndpoints/getRandomSegment');
 const saveRemoveImage = require('./apiEndpoints/saveRemoveImage');
 const randomImage = require('./apiEndpoints/randomImage');
+const undercategories = require('./apiEndpoints/undercategories');
 
 app.use(bodyParser.json({ limit: '1000mb' })); // Adjust the limit as needed
 app.use(bodyParser.urlencoded({ limit: '1000mb', extended: true }));
@@ -19,6 +20,7 @@ app.use(cors());
 app.use(express.json());
 
 app.use('/categories', categoriesApi);
+app.use('/undercategories', undercategories);
 app.use('/imagesByCategory', imagesByCategoryRouter);
 app.use('/imagesByUndercategory', imagesByUndercategoryRouter);
 app.use('/getProcessedImageData', processImage);

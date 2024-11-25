@@ -13,6 +13,8 @@ button {
     margin: 3px;
     margin-left: 30px;
     border-left: 2px solid #242424;
+    position: relative;
+    padding-right: 40px;
     /*overflow: hidden;*/
 }
 
@@ -33,6 +35,7 @@ button {
 .category {
     position: relative;
     padding-right: 40px;
+    margin: 3px;
 }
 
 .container {
@@ -50,9 +53,16 @@ button {
     bottom: 10px;
 }
 
+#icons-undercategory {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    
+}
+
 img {
     width: auto;
-    height: 20px;
+    height: 25px;
 }
 
 h1 {
@@ -71,7 +81,7 @@ h2 {
     max-height: 85vh;
     direction: rtl;
     overflow-y: auto;
-    overflow-x: hidden;
+    overflow-x: visible;
 }
 
 /* Custom scrollbar styles (for webkit browsers) */

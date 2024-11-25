@@ -1,0 +1,17 @@
+<div id="container" *ngIf="popupVisible">
+    <div class="item">
+        <p>Add images to 'undercategory-name'</p>
+    </div>
+
+    <div class="item">
+        <p>Select images:</p>
+        
+    </div> 
+    
+    <div class="item" id="action-buttons">
+        <button id="save" (click)="hidePopup()">Save</button>
+        <button id="cancel" (click)="hidePopup()">Cancel</button>
+    </div>
+</div>
+
+<div id="background" *ngIf="popupVisible" (click)="hidePopup()"></div>

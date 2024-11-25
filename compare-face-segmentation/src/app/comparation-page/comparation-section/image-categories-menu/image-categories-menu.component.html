@@ -12,12 +12,17 @@
                         </div>
                     </button>
                     <div *ngIf="isActiveCategory(category.id)" class="undercategories">
-                        <button *ngFor="let undercategory of category.undercategories" 
-                                (click)="setSelectedUndercategory(undercategory.id)" 
-                                [class.selected-undercategory]="isSelectedUndercategory(undercategory.id)"
-                                class="undercategory">
-                        {{ undercategory.name }}
-                        </button>
+                        <div *ngFor="let undercategory of category.undercategories" class="undercategory" (mouseenter)="undercategory.hovered = true" (mouseleave)="undercategory.hovered = false">
+                            <button  
+                                    (click)="setSelectedUndercategory(undercategory.id)" 
+                                    [class.selected-undercategory]="isSelectedUndercategory(undercategory.id)"
+                                    >
+                            {{ undercategory.name }}
+                            </button>
+                            <div id="icons-undercategory"  *ngIf="undercategory.hovered">
+                                <img src="assets/9042190_add_media_image_icon.svg" alt="Images" (click)="showImagesPopup(undercategory.id)"/>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

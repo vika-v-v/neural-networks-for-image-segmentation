@@ -102,5 +102,9 @@ export class ImageCategoriesMenuComponent implements CategoriesObserver {
       });
     }
   }
+
+  showImagesPopup(category: number) {
+    this.popupController.showChangeUndercategoryImagesPopup(category);
+  }
   
 }
