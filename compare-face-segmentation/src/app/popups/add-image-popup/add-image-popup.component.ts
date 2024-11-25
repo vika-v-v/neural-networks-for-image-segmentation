@@ -223,15 +223,35 @@ export class AddImagePopupComponent implements AddEditImagePopupObserver {
       
     } else {
       // Save new image
+      // TODO: this was a dirty fix with loading networks 2 and 3 twice, fix it
       this.imageService.saveAndProcessImage(image).subscribe(
         (response) => {
           console.log('Image saved successfully:', response);
           this.imageObserverService.imageAdded(response.imgId);
+          this.imageService.processImage(response.imgId, 2).subscribe(
+            (response) => {
+              console.log('Image processed successfully:', response);
+
+              this.imageService.processImage(response.imgId, 3).subscribe(
+                (response) => {
+                  console.log('Image processed successfully:', response);
+                  this.imageObserverService.imagesUpdated();
+                },
+                (error) => {
+                  console.error('Error processing image:', error);
+                });
+            },
+            (error) => {
+              console.error('Error processing image:', error);
+            });
+
           this.cancel(); // Reset the popup
         },
         (error) => {
           console.error('Error saving image:', error);
         }
-      );}
+        );
+        this.hidePopup(); // TODO: add a popup
+    }
   }
 }

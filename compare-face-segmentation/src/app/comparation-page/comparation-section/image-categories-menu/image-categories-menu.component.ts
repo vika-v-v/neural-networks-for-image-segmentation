@@ -92,6 +92,7 @@ export class ImageCategoriesMenuComponent implements CategoriesObserver {
             if (category.undercategories && category.undercategories.length > 0) {
               this.selectedUndercategoryId = category.undercategories[0].id;
               this.undercategorySelected.emit(this.selectedUndercategoryId);
+              this.toggleActiveCategory(category.id);
               break; // Exit the loop after selecting the first undercategory
             }
           }
