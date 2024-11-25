@@ -57,10 +57,10 @@
 }
 
 .header-text {
-    margin-top: 10vh;
+    margin-top: 7vh;
     margin-left: 7vw;
     width: 35%;
-    font-size: 5vw;
+    font-size: 4.5vw;
     color: #77300f;
     text-align: left;
     z-index: 20;
@@ -118,4 +118,21 @@
 
 .image {
     z-index: 0;
+}
+
+.logos {
+    border-left: none !important;
+    height: auto;
+    display: flex;
+    flex-direction: row;
+    gap: 50px;
+    margin-top: 70px;
+}
+
+.logos img {
+    max-width: calc(50% - 30px);
+    max-height: 100%;
+    padding: 5px;
+    height: auto;
+    object-fit: contain;
 }
