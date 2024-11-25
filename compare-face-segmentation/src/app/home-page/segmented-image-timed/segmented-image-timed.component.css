@@ -50,12 +50,12 @@
 
 .original {
     z-index: 0;
-    animation: ease-in-out 1s slideInRight;
+    animation: slideInRight 1s ease-in-out;
 }
 
 .segment {
     z-index: 1;
-    animation: ease-in-out 5s fadeInOut;
+    animation: fadeInOut 5s ease-in-out;
     animation-fill-mode: both;
 }
 

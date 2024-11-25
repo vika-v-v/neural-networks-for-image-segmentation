@@ -21,17 +21,24 @@ export class SegmentedImageTimedComponent {
   segmentSrc: string | null = null;
   segment: any = null;
 
+  nextSegmentSrc: string | null = null;
+  nextSegment: any = null;
+
+
   private fetchInterval!: Subscription;
 
   constructor(private imageService: ImageService) { }
 
   ngOnInit(): void {
-    this.loadOriginalImage();
+    //this.loadOriginalImage();
+    this.originalImageUrl = 'assets/homepage-segmented-image.png'; // TODO: this was a dirty fix to directly show the image
 
-    this.fetchInterval = timer(1000, 7000).subscribe(() => {
-      this.segmentSrc = null;
-      this.loadSegment();
-    });
+    this.preloadNextSegment();
+
+    // Wait for initial delay, then display the first segment
+    setTimeout(() => {
+      this.showNextSegment();
+    }, 2000);
   }
 
   loadOriginalImage(): void {
@@ -43,7 +50,7 @@ export class SegmentedImageTimedComponent {
     });
   }
 
-  loadSegment(): void {
+  /*loadSegment(): void {
     this.imageService.getRandomSegment(this.imageId).subscribe({
       next: (response) => {
         this.segmentSrc = 'data:image/jpeg;base64,' + response.base64;
@@ -51,13 +58,46 @@ export class SegmentedImageTimedComponent {
       },
       error: (error) => console.error('Error fetching segment:', error)
     });
+  }*/
+
+  preloadNextSegment(): void {
+    this.imageService.getRandomSegment(this.imageId).subscribe({
+      next: (response) => {
+        this.nextSegmentSrc = 'data:image/jpeg;base64,' + response.base64;
+        this.nextSegment = response;
+      },
+      error: (error) => console.error('Error fetching segment:', error)
+    });
   }
+  
+  showNextSegment(): void {
+    // Set the current segment to the preloaded one
+    this.segmentSrc = this.nextSegmentSrc;
+    this.segment = this.nextSegment;
+  
+    // Start preloading the next segment
+    this.preloadNextSegment();
+  }
+  
 
   ngOnDestroy(): void {
     if (this.fetchInterval) {
       this.fetchInterval.unsubscribe();
     }
   }
+
+  onAnimationEnd(): void {
+    // Remove the current segment
+    this.segmentSrc = null;
+  
+    // Wait for a short delay, then display the next segment
+    setTimeout(() => {
+      this.showNextSegment();
+    }, 10); // Adjusted delay to 1000ms
+  }
+  
+  
+  
 
   /*
   ngOnChanges(changes: SimpleChanges): void {

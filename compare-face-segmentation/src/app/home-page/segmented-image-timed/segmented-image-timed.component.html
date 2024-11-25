@@ -3,7 +3,7 @@
 
     <ng-container *ngIf="segmentSrc">
       <img [src]="segmentSrc" alt="Segment" class="segment image">
-      <div class="segment-description">
+      <div class="segment-description" (animationend)="onAnimationEnd()">
           <p>{{segment.nn_name}}</p>
           <p class="segment-label-name">{{segment.label}}</p>
         </div>
