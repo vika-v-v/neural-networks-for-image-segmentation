@@ -49,7 +49,7 @@ This platform enables users to compare different AI models for image segmentatio
 </ul>
 You can find a sceme for the architecture under <a href='./docu/Architecture.pdf'>docu/Architecture.pdf</a>.
 
-<br>
+<br><br>
 <h2>Getting Started</h2>
 
 To get started with the project, please refer to the <a href='./docu/GETTING_STARTED.md'>GETTING_STARTED</a> guide, which provides detailed instructions on setting up the development environment, installing dependencies, and running the application locally.
