@@ -1,22 +1,22 @@
-# Neural Networks for Image Segmentation
+<h1>Neural Networks for Image Segmentation</h1>
 
 A web application for comparing various AI models for image segmentation to help select the most suitable model for specific purposes.
 
 <br>
-## Overview
+<h2>Overview</h2>
 
 This platform enables users to compare different AI models for image segmentation, facilitating the selection of the most appropriate model based on specific requirements. One of the primary use cases is the comparison between two images to determine whether they depict the same person, a critical functionality for projects like <a href="https://www.hsbi.de/wirtschaft/forschung/arbeitsgruppe-angewandte-ki/adrian">ADRIAN</a>.
 
 <br>
-## Demo and screenshots:
+<h2>Demo and screenshots:</h2>
 <img src="./docu/images/homepage_screenshot_no_video.png" alt="Homepage">
 <br>
 <img src="./docu/images/comparation_page_screenshot.jpeg" alt="Comparation page">
 <br>
 <a href="https://www.youtube.com/watch?v=HCTjcWAPbTU?autoplay=1" style="max-width: 80vw"><img src="./docu/images/homepage_screenshot.png" alt="Demo login" style="max-width:80%;"></a>
 
-<br>
-## Features
+<br><br>
+<h2>Features</h2>
 <ul>
 <li><b>Model Comparison:</b> Compare multiple AI models side by side to evaluate their performance on image segmentation tasks. Models which were used are:
 <ul>
@@ -32,7 +32,15 @@ This platform enables users to compare different AI models for image segmentatio
 </ul>
 
 <br>
-## Architecture
+<h2>Features in development</h2>
+<ul>
+<li>Adding origin, tags and notes. Currently saved only as placeholders in the "Add image" popup, but soon will be updated.</li>
+<li>User messages notifying that the image or category was saved/removed/... successfully</li>
+<li>... write your ideas in the issues!</li>
+</ul>
+
+<br>
+<h2>Architecture</h2>
 <ul>
 <li><b>Frontend: Angular</b> – Provides a dynamic and responsive user interface.</li>
 <li><b>Backend: Node.js with Express.js </b> – Handles API requests, business logic, and serves the frontend.</li>
@@ -42,12 +50,12 @@ This platform enables users to compare different AI models for image segmentatio
 You can find a sceme for the architecture under <a href='./docu/Architecture.pdf'>docu/Architecture.pdf</a>.
 
 <br>
-## Getting Started
+<h2>Getting Started</h2>
 
 To get started with the project, please refer to the <a href='./docu/GETTING_STARTED.md'>GETTING_STARTED</a> guide, which provides detailed instructions on setting up the development environment, installing dependencies, and running the application locally.
 
 <br>
-## More documentation
+<h2>More documentation</h2>
 
 There is a folder docu in this repository, which includes some documentation, to be specific:
 - docu<br>
@@ -59,7 +67,7 @@ There is a folder docu in this repository, which includes some documentation, to
 
 
 <br>
-## Contributing
+<h2>Contributing</h2>
 
 Contributions are welcome! Please follow these steps to contribute:
 <ol>
