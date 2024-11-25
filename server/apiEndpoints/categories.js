@@ -210,4 +210,82 @@ router.put('/:id', async (req, res) => {
   }
 });
 
+// Add this route
+router.post('/update-images/:undercategId', (req, res) => {
+  const undercategId = req.params.undercategId;
+  const { imageIds } = req.body;
+
+  if (!Array.isArray(imageIds)) {
+    return res.status(400).json({ error: 'Invalid imageIds' });
+  }
+
+  db.run('BEGIN TRANSACTION', [], (err) => {
+    if (err) {
+      console.error('Error beginning transaction:', err.message);
+      return res.status(500).json({ error: 'Failed to begin transaction' });
+    }
+
+    // Delete existing mappings
+    const deleteSql = 'DELETE FROM Image_Undercateg WHERE undercateg_id = ?';
+    db.run(deleteSql, [undercategId], (err) => {
+      if (err) {
+        console.error('Error deleting existing mappings:', err.message);
+        db.run('ROLLBACK');
+        return res.status(500).json({ error: 'Failed to delete existing mappings' });
+      }
+
+      // Insert new mappings
+      if (imageIds.length === 0) {
+        // No images to insert
+        db.run('COMMIT', [], (err) => {
+          if (err) {
+            console.error('Error committing transaction:', err.message);
+            return res.status(500).json({ error: 'Failed to commit transaction' });
+          }
+          res.status(200).json({ message: 'Undercategory images updated successfully' });
+        });
+      } else {
+        const insertSql = 'INSERT INTO Image_Undercateg (img_id, undercateg_id) VALUES (?, ?)';
+        const stmt = db.prepare(insertSql);
+        let pending = imageIds.length;
+        let hasError = false;
+
+        imageIds.forEach((imgId) => {
+          stmt.run([imgId, undercategId], (err) => {
+            if (err) {
+              console.error('Error inserting mapping:', err.message);
+              hasError = true;
+            }
+            pending--;
+
+            if (pending === 0) {
+              stmt.finalize((err) => {
+                if (err) {
+                  console.error('Error finalizing statement:', err.message);
+                  db.run('ROLLBACK');
+                  return res.status(500).json({ error: 'Failed to finalize statement' });
+                }
+
+                if (hasError) {
+                  db.run('ROLLBACK');
+                  return res.status(500).json({ error: 'Failed to insert mappings' });
+                }
+
+                db.run('COMMIT', [], (err) => {
+                  if (err) {
+                    console.error('Error committing transaction:', err.message);
+                    return res.status(500).json({ error: 'Failed to commit transaction' });
+                  }
+                  res.status(200).json({ message: 'Undercategory images updated successfully' });
+                });
+              });
+            }
+          });
+        });
+      }
+    });
+  });
+});
+
+
 module.exports = router;

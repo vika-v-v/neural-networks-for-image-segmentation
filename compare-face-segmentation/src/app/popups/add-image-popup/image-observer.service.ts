@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 export interface ImageObserver {
     imageAdded(id: number): void;
 
-    imageUpdated(id: number): void;
+    imagesUpdated(): void;
 }
 
 @Injectable({
@@ -20,7 +20,7 @@ export class ImageObserverService {
     this.imageObservers.forEach(observer => observer.imageAdded(id));
   }
 
-  imageUpdated(id: number): void {
-    this.imageObservers.forEach(observer => observer.imageUpdated(id));
+  imagesUpdated(): void {
+    this.imageObservers.forEach(observer => observer.imagesUpdated());
   }
 }

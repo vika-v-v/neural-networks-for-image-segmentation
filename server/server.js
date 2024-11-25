@@ -10,7 +10,7 @@ const neuralNetworksRouter = require('./apiEndpoints/neuralNetworks')
 const processImage = require('./apiEndpoints/processImage');
 const imageByIdRouter = require('./apiEndpoints/imageById');
 const getRandomSegment = require('./apiEndpoints/getRandomSegment');
-const saveRemoveImage = require('./apiEndpoints/saveRemoveImage');
+const saveRemoveImage = require('./apiEndpoints/saveRemoveGetImages');
 const randomImage = require('./apiEndpoints/randomImage');
 const undercategories = require('./apiEndpoints/undercategories');
 

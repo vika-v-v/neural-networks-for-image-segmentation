@@ -2,6 +2,17 @@ const express = require('express');
 const router = express.Router();
 const db = require('../db');
 
+router.get('/', (req, res) => {
+  const sql = 'SELECT img_id, img_url, img_origin FROM Image';
+  db.all(sql, [], (err, images) => {
+    if (err) {
+      console.error('Error fetching images:', err.message);
+      return res.status(500).json({ error: 'Error fetching images' });
+    }
+    res.json({ images });
+  });
+});
+
 router.post('/add', (req, res) => {
     const { url, undercategories } = req.body;
   

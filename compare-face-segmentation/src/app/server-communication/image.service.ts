@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, forkJoin, map, switchMap } from 'rxjs';
 import { NNetworkService } from './nnetwork.service';
+import { Image } from './categories.service';
 
 @Injectable({
   providedIn: 'root'
@@ -15,6 +16,11 @@ export class ImageService {
   getImages(undercategoryId: number): Observable<any> {
     const url = 'http://localhost:3000/imagesByUndercategory/' + undercategoryId;
     return this.http.get<any>(url);
+  }
+
+  getAllImages(): Observable<{ images: Image[] }> {
+    const url = `${this.baseUrl}/images`;
+    return this.http.get<{ images: Image[] }>(url);
   }
 
   getImage(imageId: number): Observable<any> {

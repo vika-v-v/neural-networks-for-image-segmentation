@@ -33,7 +33,7 @@ export class AddImagePopupComponent implements AddEditImagePopupObserver {
   imageId: number | null = null;
   originalImageUrl: string = '';
 
-  constructor(private popupController: PopupController, private categoryService: CategoryService, private imageService: ImageService, private imageObserverS: ImageObserverService) {
+  constructor(private popupController: PopupController, private categoryService: CategoryService, private imageService: ImageService, private imageObserverService: ImageObserverService) {
     this.popupController.addAddImagePopupObserver(this);
     this.loadCategories();
   }
@@ -213,7 +213,7 @@ export class AddImagePopupComponent implements AddEditImagePopupObserver {
         this.imageService.updateAndProcessImage(this.imageId, image).subscribe(
           (response) => {
             console.log('Image updated successfully:', response);
-            this.imageObserverS.imageUpdated(this.imageId!);
+            this.imageObserverService.imagesUpdated();
             this.cancel(); // Reset the popup
           },
           (error) => {
@@ -226,7 +226,7 @@ export class AddImagePopupComponent implements AddEditImagePopupObserver {
       this.imageService.saveAndProcessImage(image).subscribe(
         (response) => {
           console.log('Image saved successfully:', response);
-          this.imageObserverS.imageAdded(response.imgId);
+          this.imageObserverService.imageAdded(response.imgId);
           this.cancel(); // Reset the popup
         },
         (error) => {

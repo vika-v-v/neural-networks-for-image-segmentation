@@ -70,7 +70,7 @@ export class ComparationSectionComponent implements OnChanges, ImageObserver {
     });
   }
 
-  imageUpdated(id: number): void {
+  imagesUpdated(): void {
     this.updateVisibleImages(true);
   }
 

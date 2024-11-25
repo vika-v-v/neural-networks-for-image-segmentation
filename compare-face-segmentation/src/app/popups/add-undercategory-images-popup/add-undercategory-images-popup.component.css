@@ -24,8 +24,8 @@
     border-radius: 10px;
     box-shadow: 0px 0px 15px 0px rgba(0, 0, 0, 0.3);
     background-color: #f4f2ee;
-    width: 30vw;
-    min-width: 500px;
+    width: 50vw;
+    min-width: 600px;
     padding: 20px;
 }
 
@@ -64,46 +64,6 @@ p {
     background-color: #e6e6e6;
 }
 
-.icon {
-    width: 30px;
-    height: 100%;
-    margin: auto;
-}
-
-.undercategories {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    margin-top: 15px;
-    max-height: 30vh;
-    overflow-y: auto;
-}
-
-#undercategory-wrapper, .undercategories div[cdkDrag] {
-    display: flex;
-    flex-direction: row;
-    gap: 10px;
-    justify-content: center;
-    align-items: center;
-}
-
-#undercategory-wrapper > input, #undercategory-wrapper > p, .undercategories div[cdkDrag] > p, .undercategories div[cdkDrag] > input {
-    width: 100%;
-    font-size: 17px;
-    padding: 5px;
-    border-radius: 3px;
-    background-color: rgb(227, 227, 227);
-    border: 1px dashed rgb(0, 0, 0);
-}
-
-#undercategory-wrapper > p, #undercategory-wrapper > input {
-    border: 1px solid rgb(193, 193, 193) !important;
-    background-color: #ffffff8a !important;
-}
-
-.cdk-drag-preview {
-    display: none;
-}
 
 #action-buttons {
     display: flex;
@@ -111,3 +71,37 @@ p {
     gap: 15px;
     margin: 5px 0;
 }
+
+.image-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    grid-gap: 10px;
+    max-height: 40vh;
+    overflow-y: scroll;
+  }
+  
+  .image-item {
+    position: relative;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border: 0.5px solid black;
+    padding: 5px;
+  }
+  
+  .image-item img {
+    width: 100%;
+    height: auto;
+    display: block;
+    margin: auto;
+  }
+  
+  .image-item input[type="checkbox"] {
+    position: absolute;
+    top: 5px;
+    left: 5px;
+  }
+  
+  

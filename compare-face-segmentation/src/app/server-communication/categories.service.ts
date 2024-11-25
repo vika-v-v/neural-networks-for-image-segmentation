@@ -45,4 +45,9 @@ export class CategoryService {
     const url = `${this.baseUrl}/undercategories/${undercategoryId}`;
     return this.http.get<{ undercategory: Undercategory }>(url);
   }
+
+  updateUndercategoryImages(undercategoryId: number, imageIds: number[]): Observable<any> {
+    const url = `${this.baseUrl}/categories/update-images/${undercategoryId}`;
+    return this.http.post<any>(url, { imageIds });
+  }
 }

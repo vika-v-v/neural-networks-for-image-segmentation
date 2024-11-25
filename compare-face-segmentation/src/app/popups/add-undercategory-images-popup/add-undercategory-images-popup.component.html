@@ -1,17 +1,32 @@
 <div id="container" *ngIf="popupVisible">
     <div class="item">
-        <p>Add images to 'undercategory-name'</p>
+      <p>Add images to the undercategory <i>{{ undercategoryName }}</i></p>
     </div>
-
+  
     <div class="item">
-        <p>Select images:</p>
-        
-    </div> 
-    
-    <div class="item" id="action-buttons">
-        <button id="save" (click)="hidePopup()">Save</button>
-        <button id="cancel" (click)="hidePopup()">Cancel</button>
+      <p>Select images:</p>
+      <div class="image-grid">
+        <div class="image-item" *ngFor="let image of allImages">
+          <img
+            [src]="image.img_url"
+            [alt]="'Image ' + image.img_id"
+            (click)="toggleImageSelection(image.img_id)"
+            [class.selected]="isImageSelected(image.img_id)"
+          />
+          <input
+            type="checkbox"
+            [checked]="isImageSelected(image.img_id)"
+            (change)="toggleImageSelection(image.img_id)"
+          />
+        </div>
+      </div>
     </div>
-</div>
-
-<div id="background" *ngIf="popupVisible" (click)="hidePopup()"></div>
+  
+    <div class="item" id="action-buttons">
+      <button id="save" (click)="save()">Save</button>
+      <button id="cancel" (click)="hidePopup()">Cancel</button>
+    </div>
+  </div>
+  
+  <div id="background" *ngIf="popupVisible" (click)="hidePopup()"></div>
+  
