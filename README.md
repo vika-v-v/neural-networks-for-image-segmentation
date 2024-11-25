@@ -4,14 +4,14 @@ A web application for comparing various AI models for image segmentation to help
 
 ## Overview
 
-This platform enables users to compare different AI models for image segmentation, facilitating the selection of the most appropriate model based on specific requirements. One of the primary use cases is the comparison between two images to determine whether they depict the same person, a critical functionality for projects like ADRIAN (https://www.hsbi.de/wirtschaft/forschung/arbeitsgruppe-angewandte-ki/adrian).
+This platform enables users to compare different AI models for image segmentation, facilitating the selection of the most appropriate model based on specific requirements. One of the primary use cases is the comparison between two images to determine whether they depict the same person, a critical functionality for projects like <a href="https://www.hsbi.de/wirtschaft/forschung/arbeitsgruppe-angewandte-ki/adrian">ADRIAN</a>.
 
 ## Demo and screenshots:
-<img src="/docu/homepage_screenshot_no_video.png" alt="Homepage">
+<img src="./docu/images/homepage_screenshot_no_video.png" alt="Homepage">
 <br>
-<img src="/docu/screenshot_comparation_page.jpeg" alt="Comparation page">
+<img src="./docu/images/comparation_page_screenshot.jpeg" alt="Comparation page">
 <br>
-<a href="https://www.youtube.com/watch?v=HCTjcWAPbTU?autoplay=1" style="max-width: 80vw"><img src="/docu/homepage_screenshot.png" alt="Demo login" style="max-width:80%;"></a>
+<a href="https://www.youtube.com/watch?v=HCTjcWAPbTU?autoplay=1" style="max-width: 80vw"><img src="./docu/images/homepage_screenshot.png" alt="Demo login" style="max-width:80%;"></a>
 
 ## Features
 <ul>
@@ -39,7 +39,18 @@ You can find a sceme for the architecture under <a href='./docu/Architecture.pdf
 
 ## Getting Started
 
-To get started with the project, please refer to the Get Started guide, which provides detailed instructions on setting up the development environment, installing dependencies, and running the application locally.
+To get started with the project, please refer to the <a href='./docu/GETTING_STARTED.md'>GETTING_STARTED</a> guide, which provides detailed instructions on setting up the development environment, installing dependencies, and running the application locally.
+
+## More documentation
+
+There is a folder docu in this repository, which includes some documentation, to be specific:
+- docu<br>
+  - <a href='./docu/images'>images</a> (images for this readme and other files)
+  - <a href='./docu/GETTING_STARTED.md'>GETTING_STARTED.md</a> (a very important guide on how to start the website locally)
+  - <a href='./docu/ADDING_NEURAL_NETWORK.md'>ADDING_NEURAL_NETWORK</a> (a guide on how to add a new neural network from the 'achitectural' point of view, read it before working on the new neural network)
+  - <a href='./docu/ADDING_NEW_POPUP.md'>ADDING_NEW_POPUP.md</a> (a guide on how to add a popup to be consistent with existing frontend architecture)
+  - <a href='-/docu/Architecture.pdf'>Architecture.pdf</a> (the architecture of the website depicted in a sceme)
+
 
 ## Contributing
 
