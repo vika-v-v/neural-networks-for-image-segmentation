@@ -1,6 +1,7 @@
 <h1>Neural Networks for Image Segmentation</h1>
 
 A web application for comparing various AI models for image segmentation to help select the most suitable model for specific purposes.
+For more documentation, visit: [https://github.com/vika-v-v/neural-networks-for-image-segmentation/blob/master/docu/GETTING_STARTED.md](https://app.readytensor.ai/publications/a_web-based_platform_for_comparing_neural_networks_in_image_segmentation_YpdmSXhmmrxI).
 
 <br>
 <h2>Overview</h2>
