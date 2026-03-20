@@ -24,7 +24,7 @@ function executeSqlFile(db, filePath) {
 }
 
 // Connect to the SQLite database (it will be created if it doesn't exist)
-const db = new sqlite3.Database('./server/mydatabase.db', async (err) => {
+const db = new sqlite3.Database(path.join(__dirname, 'mydatabase.db'), async (err) => {
   if (err) {
     console.error('Error opening database:', err.message);
     process.exit(1);

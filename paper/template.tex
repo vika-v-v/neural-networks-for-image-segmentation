@@ -1,0 +1,31 @@
+\documentclass[conference,a4paper,flushend]{iaria} % (based on IEEEtran.cls)
+% The class iaria.cls loads biblatex/biber with correct IARIA settings
+% as well as a set of common packages (times, inputenc[utf8], fontenc[T1],
+% graphicx, xcolor, url, orcidlink, hyperref, extdash[shortcuts])
+\addbibresource{xampl.bib} % (xampl file provided by the BibTEX base files)
+\title{Minimal Working Example of an IARIA Paper}
+\author{
+  \IEEEauthorblockN{%
+    Jane Smith and John Doe\,\orcidlink{0000-0002-1175-2668}}
+  \IEEEauthorblockA{%
+    Department of Computer Science\\
+    University of …\\
+    City, Country\\
+    e-mail: {\tt$\lbrace$j.smith\,|\,j.doe$\rbrace$@example.org}
+} }
+\begin{document}
+\maketitle
+\begin{abstract}
+This paper is a minimal working example.
+\end{abstract}
+\begin{IEEEkeywords}
+minimal; MWE; IARIA.
+\end{IEEEkeywords}
+
+\section{Introduction}
+Here we go \cite{article-full}.
+With multi-cite \cite{article-full, inproceedings-full}.
+Three element multi-cite triggers cite compression \cite{article-full, inproceedings-full, book-full}.
+
+\printbibliography
+\end{document}

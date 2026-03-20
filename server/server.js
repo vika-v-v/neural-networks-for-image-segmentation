@@ -13,6 +13,7 @@ const getRandomSegment = require('./apiEndpoints/getRandomSegment');
 const saveRemoveImage = require('./apiEndpoints/saveRemoveGetImages');
 const randomImage = require('./apiEndpoints/randomImage');
 const undercategories = require('./apiEndpoints/undercategories');
+const processedDataByUndercategory = require('./apiEndpoints/processedDataByUndercategory');
 
 app.use(bodyParser.json({ limit: '1000mb' })); // Adjust the limit as needed
 app.use(bodyParser.urlencoded({ limit: '1000mb', extended: true }));
@@ -29,6 +30,7 @@ app.use('/imageById', imageByIdRouter);
 app.use('/getRandomSegment', getRandomSegment);
 app.use('/images', saveRemoveImage);
 app.use('/random-image', randomImage);
+app.use('/getProcessedDataByUndercategory', processedDataByUndercategory);
 
 
 let pipeline, env, fetch;

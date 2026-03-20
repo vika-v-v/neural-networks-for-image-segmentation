@@ -63,6 +63,10 @@ export class SegmentedImageTimedComponent {
   preloadNextSegment(): void {
     this.imageService.getRandomSegment(this.imageId).subscribe({
       next: (response) => {
+        if (!response || !response.base64) {
+          console.warn('No segment data available for image', this.imageId, '— is preload.js run?');
+          return;
+        }
         this.nextSegmentSrc = 'data:image/jpeg;base64,' + response.base64;
         this.nextSegment = response;
       },

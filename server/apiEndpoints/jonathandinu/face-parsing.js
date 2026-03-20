@@ -5,14 +5,14 @@ const path = require('path');
 
 
 let fetch;
-let pipeline, env;
+let modelPromise;
 
 (async () => {
   fetch = (await import("node-fetch")).default;
   const transformers = await import("@xenova/transformers");
-  pipeline = transformers.pipeline;
-  env = transformers.env;
+  const { pipeline, env } = transformers;
   env.allowLocalModels = false;
+  modelPromise = pipeline("image-segmentation", "jonathandinu/face-parsing");
 })();
 
 const labelMapping = {
@@ -42,10 +42,7 @@ function mapLabel(technicalLabel) {
 }
 
 async function processImageWithModel(imageInput) {
-  const model = await pipeline(
-    "image-segmentation",
-    "jonathandinu/face-parsing"
-  );
+  const model = await modelPromise;
 
   // Handle image input
   let tempFilePath = null;

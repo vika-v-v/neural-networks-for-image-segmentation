@@ -30,6 +30,9 @@ export class SegmentedImageComponent implements AfterViewInit, OnChanges {
   private labelsSubscription: Subscription | null = null;
   private isActive: boolean = true; // To track if the component is still active
 
+  private lastSegmentIndex: number = 255;
+  private rafPending: boolean = false;
+
 
   constructor(private imageService: ImageService, private positioningService: ImageInformationPositionService) {}
 
@@ -39,19 +42,35 @@ export class SegmentedImageComponent implements AfterViewInit, OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['image'] && this.image) {
-      // Unsubscribe from previous subscription if it exists
       if (this.labelsSubscription) {
         this.labelsSubscription.unsubscribe();
       }
-  
+
+      // Load the original image immediately, don't wait for segmentation
+      this.processedData = null;
+      this.loadOriginalImage();
+
+      // Use pre-fetched cache if available
+      const cached = this.image.processedData?.[this.neuralNetwork.id];
+      if (cached?.length > 0) {
+        this.processedData = cached;
+        if (this.originalImage?.complete && this.originalImage.naturalHeight !== 0) {
+          this.loadSegmentImages();
+        }
+        return;
+      }
+
+      // Fall back to fetching from the server
       this.labelsSubscription = this.imageService.getLabelsWithSections(this.neuralNetwork.id, this.image.img_id).subscribe({
         next: (result: any) => {
-          // Check if the component is still active
           if (!this.isActive) return;
-  
-          this.image.processedData = result;
+
+          if (!this.image.processedData) this.image.processedData = {};
+          this.image.processedData[this.neuralNetwork.id] = result;
           this.processedData = result;
-          this.loadOriginalImage();
+          if (this.originalImage?.complete && this.originalImage.naturalHeight !== 0) {
+            this.loadSegmentImages();
+          }
         },
         error: (error: any) => console.error('Error fetching image data:', error)
       });
@@ -170,36 +189,43 @@ export class SegmentedImageComponent implements AfterViewInit, OnChanges {
 
   onMouseMove(event: MouseEvent): void {
     if (!this.allResourcesLoaded) return;
-  
+
     const rect = this.segmentCanvas.nativeElement.getBoundingClientRect();
     const scaleX = this.segmentCanvas.nativeElement.width / rect.width;
     const scaleY = this.segmentCanvas.nativeElement.height / rect.height;
-  
-    const scaleFactor = 0.2; // Same as used in createLabelMap
-  
-    // Adjust mouse position for scaled label map
+    const scaleFactor = 0.2;
+
     const x = Math.floor((event.clientX - rect.left) * scaleX * scaleFactor);
     const y = Math.floor((event.clientY - rect.top) * scaleY * scaleFactor);
     const width = Math.floor(this.segmentCanvas.nativeElement.width * scaleFactor);
     const height = Math.floor(this.segmentCanvas.nativeElement.height * scaleFactor);
-  
+
+    let segmentIndex = 255;
     if (x >= 0 && x < width && y >= 0 && y < height) {
-      const index = y * width + x;
-      const segmentIndex = this.labelMap[index];
-      if (segmentIndex !== 255) { // 255 means no segment
-        this.highlightedLabel = this.processedData[segmentIndex].label;
-        this.ctx.clearRect(0, 0, this.segmentCanvas.nativeElement.width, this.segmentCanvas.nativeElement.height);
-        this.ctx.drawImage(this.originalImage, 0, 0, this.segmentCanvas.nativeElement.width, this.segmentCanvas.nativeElement.height);
-        this.ctx.drawImage(this.segmentImages[segmentIndex], 0, 0, this.segmentCanvas.nativeElement.width, this.segmentCanvas.nativeElement.height);
-      } else {
-        this.highlightedLabel = null;
-        this.drawAllSegments();
-      }
-    } else {
-      this.highlightedLabel = null;
-      this.drawAllSegments();
+      segmentIndex = this.labelMap[y * width + x];
     }
-    // Update the information panel
+
+    // Skip redraw and info panel update if the segment hasn't changed
+    if (segmentIndex === this.lastSegmentIndex) return;
+    this.lastSegmentIndex = segmentIndex;
+
+    this.highlightedLabel = segmentIndex !== 255 ? this.processedData[segmentIndex].label : null;
+
+    // Throttle canvas redraws with requestAnimationFrame
+    if (!this.rafPending) {
+      this.rafPending = true;
+      requestAnimationFrame(() => {
+        this.rafPending = false;
+        if (segmentIndex !== 255) {
+          this.ctx.clearRect(0, 0, this.segmentCanvas.nativeElement.width, this.segmentCanvas.nativeElement.height);
+          this.ctx.drawImage(this.originalImage, 0, 0, this.segmentCanvas.nativeElement.width, this.segmentCanvas.nativeElement.height);
+          this.ctx.drawImage(this.segmentImages[segmentIndex], 0, 0, this.segmentCanvas.nativeElement.width, this.segmentCanvas.nativeElement.height);
+        } else {
+          this.drawAllSegments();
+        }
+      });
+    }
+
     this.positioningService.showInformationPanelForImage(
       this.segmentCanvas.nativeElement,
       this.getImageInformation()
@@ -228,6 +254,7 @@ export class SegmentedImageComponent implements AfterViewInit, OnChanges {
   onMouseLeave(): void {
     if (!this.allResourcesLoaded) return;
     this.highlightedLabel = null;
+    this.lastSegmentIndex = 255;
     this.drawAllSegments();
     this.positioningService.showInformationPanelForImage(null);
   }

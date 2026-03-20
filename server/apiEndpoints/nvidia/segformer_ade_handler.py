@@ -1,5 +1,5 @@
 # segformer_ade_handler.py
-from transformers import SegformerFeatureExtractor, SegformerForSemanticSegmentation
+from transformers import SegformerImageProcessor, SegformerForSemanticSegmentation
 from PIL import Image
 import requests
 import numpy as np
@@ -9,7 +9,7 @@ import torch.nn.functional as F
 
 class SegformerADEModel:
     def __init__(self, model_name):
-        self.feature_extractor = SegformerFeatureExtractor.from_pretrained(model_name)
+        self.feature_extractor = SegformerImageProcessor.from_pretrained(model_name)
         self.model = SegformerForSemanticSegmentation.from_pretrained(model_name)
 # https://huggingface.co/datasets/huggingface/label-files/blob/main/ade20k-id2label.json
         self.label_descriptions = [

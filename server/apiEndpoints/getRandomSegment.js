@@ -9,7 +9,9 @@ router.get('/:imageId', async (req, res) => {
 
     try {
       const response = await databaseOperations.getRandomSegment(imageId);
-      // Return the result as a JSON object including Base64 images
+      if (!response) {
+        return res.status(404).json({ error: 'No segments found for this image' });
+      }
       res.json(response);
     } catch (fetchError) {
       console.error('Error fetching image:', fetchError.message);

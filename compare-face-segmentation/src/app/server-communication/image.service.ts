@@ -18,6 +18,11 @@ export class ImageService {
     return this.http.get<any>(url);
   }
 
+  getSegmentsByUndercategory(undercategoryId: number): Observable<{ [imgId: number]: { [nnId: number]: any[] } }> {
+    const url = `${this.baseUrl}/getProcessedDataByUndercategory/${undercategoryId}`;
+    return this.http.get<any>(url);
+  }
+
   getAllImages(): Observable<{ images: Image[] }> {
     const url = `${this.baseUrl}/images`;
     return this.http.get<{ images: Image[] }>(url);

@@ -1,0 +1,271 @@
+\documentclass[conference,a4paper,flushend]{iaria}
+% iaria.cls already loads: times, inputenc[utf8], fontenc[T1],
+% graphicx, xcolor, url, orcidlink, hyperref, extdash[shortcuts], biblatex/biber
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{makecell}
+\usepackage{multirow}
+\usepackage{booktabs}
+
+\addbibresource{references.bib}
+
+\begin{document}
+
+\title{A Web-Based Platform for Interactive Comparison of Neural Network Image Segmentation Models}
+
+\author{
+  \IEEEauthorblockN{%
+    Viktoriia Vovchenko\,\orcidlink{0009-0004-9798-1112},
+    Sergej Schultenkämper\,\orcidlink{0009-0005-6858-9813},
+    and Frederik S. Bäumer\,\orcidlink{0000-0002-0826-0144}
+  }
+  \IEEEauthorblockA{%
+    Bielefeld University of Applied Sciences and Arts\\
+    Applied AI Working Group\\
+    Interaktion 1, 33619 Bielefeld, Germany\\
+    {\tt\{viktoriia.vovchenko|sergej.schultenkaemper|frederik.baeumer\}@hsbi.de}
+  }
+}
+
+\maketitle
+
+\begin{abstract}
+Selecting an appropriate semantic segmentation model for a given application domain remains a challenging and time-consuming task for practitioners and researchers. This paper presents an interactive, web-based platform that enables side-by-side visual comparison of multiple neural network segmentation models applied to identical images. The system integrates three transformer-based segmentation models—a face-parsing network producing 19 semantic classes, a clothing segmentation model with 18 classes, and a general-purpose scene segmentation model spanning 150 ADE20K categories—within a unified interface built on Angular, Node.js, and Python. Key contributions include a canvas-based interactive overlay visualization with optimized hover-based segment highlighting using a downscaled label map, a caching layer that persists inference results to an SQLite database, and an extensible factory-pattern architecture that accommodates heterogeneous model runtimes. The platform organizes a curated dataset of images under a hierarchical category taxonomy, supporting structured evaluation across demographic and contextual variables. As a practical use case, the system is applied within the ADRIAN project to assist in verifying identity consistency across images through segmentation-based analysis. The platform is publicly available and designed to lower the barrier for comparative model evaluation in applied computer vision workflows.
+\end{abstract}
+
+\begin{IEEEkeywords}
+semantic segmentation; model comparison; SegFormer; face parsing; interactive visualization; web platform.
+\end{IEEEkeywords}
+
+% ============================================================
+\section{Introduction}
+% ============================================================
+
+Semantic image segmentation—the task of assigning a class label to every pixel in an image—has seen rapid progress driven by deep learning, with transformer-based architectures \cite{dosovitskiy2021vit} in particular achieving state-of-the-art results on standard benchmarks \cite{xie2021segformer}. However, the abundance of available pre-trained models, each trained on different datasets and optimized for different domain assumptions, makes model selection non-trivial in practice. A model that excels on face parsing may perform poorly on general scene understanding, and vice versa. Practitioners must therefore evaluate candidate models against their target data distribution before committing to a deployment choice.
+
+Existing evaluation workflows are fragmented: researchers typically run inference scripts locally, produce static result images, and compare them manually. This process is labor-intensive, not easily shareable, and does not support interactive exploration of individual segment classes. There is a clear need for tooling that centralizes comparative evaluation in an accessible, visual, and reproducible manner.
+
+This paper addresses that gap by presenting a full-stack, web-based platform for the interactive comparison of segmentation models. The system allows a user to select an image from a curated, categorized dataset—or upload a custom image—choose two or more neural network models, and immediately visualize their segmentation outputs side by side on an interactive canvas. Individual segments can be explored via hover-based highlighting, with per-segment confidence scores and class labels displayed in real time.
+
+The platform integrates three representative pre-trained models from the HuggingFace Hub \cite{wolf2020huggingface}: a face-parsing model \cite{jonathandinu_faceparsing}, a clothing segmentation model \cite{mattmdjaga_segformer}, and NVIDIA's general-purpose scene segmentation model fine-tuned on ADE20K \cite{nvidia_segformer_ade}. These three models span complementary segmentation granularities—facial anatomy, clothing and body parts, and scene-level objects—making cross-model comparison particularly informative for tasks that involve human subjects.
+
+A motivating application is the ADRIAN project, an ongoing research effort at Bielefeld University of Applied Sciences and Arts focused on detecting AI-manipulated face images. Within ADRIAN, segmentation models are used to extract and compare structural face and body features across image pairs, supporting identity consistency verification. The platform described here provides a dedicated environment for evaluating and selecting segmentation models suited to this verification task.
+
+The main contributions of this work are:
+\begin{itemize}
+  \item An open, interactive web platform for side-by-side visual comparison of multiple semantic segmentation models on shared image inputs.
+  \item An optimized canvas-based rendering pipeline with a downscaled label map enabling real-time hover-based segment inspection.
+  \item An extensible system architecture supporting heterogeneous model runtimes (Node.js Transformers.js and Python Flask), unified under a common REST API and result caching layer.
+  \item A curated, hierarchically organized image dataset with demographic and contextual annotations, enabling structured evaluation across variables such as age, gender, accessories, lighting, and background.
+\end{itemize}
+
+The remainder of this paper is organized as follows. Section~\ref{sec:related} reviews related work on segmentation models and evaluation tools. Section~\ref{sec:system} describes the system architecture. Section~\ref{sec:models} details the integrated segmentation models. Section~\ref{sec:ui} presents the frontend and visualization design. Section~\ref{sec:dataset} characterizes the image dataset. Section~\ref{sec:usecase} discusses the ADRIAN use case. Section~\ref{sec:discussion} addresses limitations and future work, followed by conclusions in Section~\ref{sec:conclusion}.
+
+% ============================================================
+\section{Related Work}
+\label{sec:related}
+% ============================================================
+
+\subsection{Semantic Segmentation Models}
+
+Semantic segmentation has evolved from fully convolutional networks \cite{long2015fcn} and dilated convolution approaches such as DeepLab \cite{chen2017deeplab} to encoder-decoder architectures \cite{ronneberger2015unet} and, more recently, transformer-based models. The SegFormer architecture \cite{xie2021segformer} introduced a hierarchical transformer encoder paired with a lightweight MLP decoder, achieving strong performance across multiple benchmarks while remaining computationally efficient. Several domain-specific adaptations of SegFormer have subsequently been published on HuggingFace, including models fine-tuned for face parsing and clothing segmentation.
+
+Face parsing—the fine-grained labeling of facial regions such as eyes, nose, mouth, and hair—has been studied using methods ranging from CNN-based approaches \cite{lin2019face} to graph-based models and, recently, transformer fine-tunes. Clothing segmentation has similarly progressed with the release of large datasets such as CIHP \cite{gong2018cihp}, enabling models to distinguish among dozens of garment and body-part classes.
+
+\subsection{Model Evaluation and Benchmarking Tools}
+
+While standard benchmarks such as ADE20K \cite{zhou2017ade20k}, Cityscapes \cite{cordts2016cityscapes}, and COCO-Stuff \cite{caesar2018cocostuff} provide quantitative leaderboards, they do not support interactive, image-level qualitative comparison. Several visualization toolkits exist for inspecting model predictions—including Gradio \cite{abid2019gradio} and Streamlit-based demos—but these are typically single-model interfaces without structured dataset organization or persistent result storage.
+
+Platforms such as Papers With Code \cite{paperswithcode} aggregate published benchmarks but do not provide an interactive environment for running inference on custom data. Our platform complements these efforts by offering a self-hostable, multi-model comparison environment with persistent caching, making it suitable for iterative evaluation in applied research settings.
+
+% ============================================================
+\section{System Architecture}
+\label{sec:system}
+% ============================================================
+
+The platform follows a three-tier architecture comprising an Angular frontend, a Node.js/Express middleware layer, and a Python/Flask inference service, all backed by an SQLite database. Fig.~\ref{fig:architecture} illustrates the high-level system design.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\columnwidth]{architecture.png}
+  \caption{High-level system architecture. The Angular frontend communicates with the Node.js backend via REST. The backend routes inference requests to either the Node.js Transformers.js runtime or the Python Flask server depending on the model, and caches results in SQLite.}
+  \label{fig:architecture}
+\end{figure}
+
+\subsection{Backend: Node.js / Express (Port 3000)}
+
+The Node.js server exposes a REST API with endpoints for image management, category retrieval, neural network listing, and image processing. The primary inference endpoint is:
+
+\begin{center}
+\texttt{GET /getProcessedImageData/:nnId/:imgId}
+\end{center}
+
+Upon receiving a request, the server first checks the \texttt{Processed\_Image} database table for a cached result. If a result exists, it is returned directly, avoiding redundant inference. Otherwise, the request is forwarded to the \textit{model processing factory}, a module implementing the factory pattern \cite{gamma1994design} to dispatch to the appropriate model handler based on the neural network identifier. A \texttt{currentlyProcessing} registry prevents concurrent duplicate inference jobs for the same image-model pair.
+
+\subsection{Inference Services}
+
+Two inference runtimes are supported:
+
+\textbf{Node.js Transformers.js.} The face-parsing model (ID 1) is executed directly within the Node.js process using the \texttt{@xenova/transformers} library \cite{xenova2023transformersjs}, which provides ONNX-based inference for HuggingFace models without a Python dependency.
+
+\textbf{Python Flask (Port 6000).} The SegFormer-based clothing and scene models (IDs 2 and 3) are served by a Python process using the \texttt{transformers} library with PyTorch. Each model handler accepts an image as a URL or base64-encoded string, runs inference, upsamples the logit tensor to the original image resolution using bilinear interpolation, and returns a JSON array of segments. Each segment entry contains the class label, a randomly assigned semi-transparent RGBA color, a confidence score computed as the fraction of pixels assigned to that class, and a base64-encoded PNG segmentation mask.
+
+\subsection{Database Schema}
+
+The SQLite database contains six tables. \texttt{Neural\_Network} registers available models. \texttt{Category} and \texttt{Undercategory} define the two-level image taxonomy. \texttt{Image} stores image URLs and provenance metadata. \texttt{Image\_Undercateg} is a junction table enabling many-to-many image-to-category assignment. \texttt{Processed\_Image} caches inference results keyed by \texttt{(img\_id, nn\_id, lbl\_name)}, storing the per-label mask, color, and confidence score.
+
+\subsection{Extensibility}
+
+Adding a new segmentation model requires: (1) registering a row in the \texttt{Neural\_Network} table, (2) implementing a handler module (Node.js or Python) that returns the standard segment JSON format, and (3) adding a case to the factory dispatcher. No changes to the frontend or database schema are required, demonstrating the low integration cost of the architecture.
+
+% ============================================================
+\section{Integrated Segmentation Models}
+\label{sec:models}
+% ============================================================
+
+Table~\ref{tab:models} summarizes the three segmentation models integrated in the current release of the platform.
+
+\begin{table}[htbp]
+\caption{Integrated Segmentation Models}
+\label{tab:models}
+\begin{center}
+\begin{tabular}{p{0.28\columnwidth} p{0.16\columnwidth} p{0.14\columnwidth} p{0.28\columnwidth}}
+\toprule
+\textbf{Model} & \textbf{Backbone} & \textbf{Classes} & \textbf{Domain} \\
+\midrule
+jonathandinu/ face-parsing \cite{jonathandinu_faceparsing}
+  & SegFormer & 19 & Facial anatomy \\
+mattmdjaga/ segformer\_b2\_clothes \cite{mattmdjaga_segformer}
+  & SegFormer-B2 & 18 & Clothing \& body \\
+nvidia/ segformer-b3-ade-512 \cite{nvidia_segformer_ade}
+  & SegFormer-B3 & 150 & General scenes \\
+\bottomrule
+\end{tabular}
+\end{center}
+\end{table}
+
+\subsection{Face-Parsing Model}
+
+The \texttt{jonathandinu/face-parsing} model is a SegFormer fine-tune for facial region segmentation. It produces 19 semantic classes covering detailed facial anatomy: background, skin, nose, left and right eyes, left and right eyebrows, left and right ears, mouth, upper lip, lower lip, hair, hat, left earring, right earring, necklace, neck, and clothing. This granularity makes it well suited to tasks requiring precise facial structure analysis, such as identity verification, face editing detection, and makeup transfer.
+
+\subsection{Clothing Segmentation Model}
+
+The \texttt{mattmdjaga/segformer\_b2\_clothes} model uses a SegFormer-B2 backbone fine-tuned for human parsing and clothing segmentation \cite{gong2018cihp}. Its 18 output classes include background, hat, hair, sunglasses, upper clothes, skirt, pants, dress, belt, left and right shoes, face, left and right legs, left and right arms, bag, and scarf. This model is particularly relevant for applications involving fashion analysis, person re-identification, and clothing-aware image retrieval.
+
+\subsection{General Scene Segmentation Model}
+
+The \texttt{nvidia/segformer-b3-finetuned-ade-512-512} model is trained on the ADE20K dataset \cite{zhou2017ade20k}, which contains 150 semantic categories spanning both indoor and outdoor scenes. Its broad coverage—including structural elements (wall, floor, ceiling), natural objects (tree, plant, water), and human-made objects (chair, table, car)—makes it useful for understanding the scene context surrounding subjects, complementing the face- and clothing-specific models.
+
+% ============================================================
+\section{Frontend and Visualization}
+\label{sec:ui}
+% ============================================================
+
+The frontend is implemented in Angular 17 \cite{angular2023} and organized into a comparison page and a landing page. The comparison page is the primary workspace, comprising an image and category selector, a two-panel comparison section, and a floating segment information panel.
+
+\subsection{Canvas-Based Rendering}
+
+Segmentation results are rendered on HTML5 canvas elements using a layered compositing approach. For each model result, the original image is first drawn onto the canvas, followed by the semi-transparent segment masks drawn in sequence on top. The per-segment PNG masks—stored as base64 strings—are decoded into \texttt{Image} objects and composited using the canvas 2D API with global alpha set to 0.5, allowing the original image texture to remain visible through the overlay.
+
+\subsection{Optimized Hover Interaction}
+
+A key usability feature is segment-level hover highlighting: as the cursor moves over the canvas, the segment under the pointer is isolated and displayed with full opacity while all other segments are hidden. Implementing this interactively requires determining which segment covers each canvas pixel.
+
+A naive approach—querying canvas pixel data on every \texttt{mousemove} event—would be computationally prohibitive for large images with many segment layers. Instead, the system constructs a \textit{label map}: a downscaled (20\% of original resolution) integer array in which each entry encodes the index of the topmost non-transparent segment at that pixel location. This map is computed once per model result and stored in memory. On \texttt{mousemove}, the pointer coordinates are scaled into the label-map space and the segment index is retrieved in O(1) time without touching the displayed canvas. This approach reduces memory consumption by 25$\times$ compared to a full-resolution map and maintains interactive frame rates even for the 150-class ADE20K model.
+
+Upon identifying the hovered segment, the component redraws the canvas by compositing only the original image and the highlighted mask, and updates the floating information panel with the segment's class label and confidence score.
+
+\subsection{Image and Category Management}
+
+The platform supports uploading new images via a multi-part form, assigning them to one or more undercategories in the hierarchy. Existing images can be re-categorized or deleted. The category browser on the comparison page exposes the full two-level taxonomy, allowing users to filter the image gallery to a specific demographic or contextual subset before selecting images for comparison.
+
+\subsection{Homepage Animation}
+
+The landing page features an animated carousel that cycles through randomly selected segments from a random image using fade transitions. Each segment is displayed for a fixed interval while the next is preloaded, providing an illustrative preview of the platform's capabilities without requiring user interaction.
+
+% ============================================================
+\section{Image Dataset and Taxonomy}
+\label{sec:dataset}
+% ============================================================
+
+The platform ships with a curated set of approximately 120 images pre-loaded from Unsplash, a source of openly licensed high-resolution photographs. The images were selected to cover a diverse range of subjects relevant to face and body segmentation tasks, including variation in age, gender, ethnicity, lighting conditions, accessories, backgrounds, and image style.
+
+Images are organized under an 11-category, two-level taxonomy. The top-level categories and selected undercategories are shown in Table~\ref{tab:taxonomy}. Each image can be associated with multiple undercategories, enabling cross-cutting queries such as retrieving all images depicting elderly subjects wearing glasses.
+
+\begin{table}[htbp]
+\caption{Image Taxonomy (Top-Level Categories and Selected Undercategories)}
+\label{tab:taxonomy}
+\begin{center}
+\begin{tabular}{ll}
+\toprule
+\textbf{Category} & \textbf{Selected Undercategories} \\
+\midrule
+Age              & Child, Teen, Adult, Elderly \\
+Gender           & Male, Female, Other \\
+Race / Ethnicity & Asian, Black, Latino/Hispanic, White \\
+Accessories      & Hat, Glasses, Scarf, Medical mask \\
+Lighting         & Natural, Indoor, Low light, Backlit \\
+Facial Expression & Neutral, Smiling, Angry, Surprised \\
+Animals          & Dog, Cat, Bird, Other \\
+Background       & Indoor, Outdoor, Plain, Blurred \\
+Number of People & Single, Pair, Group \\
+Special Objects  & Phone, Weapon, Sign, Vehicle \\
+Image Style      & Photo, Painting, Illustration, Statue \\
+\bottomrule
+\end{tabular}
+\end{center}
+\end{table}
+
+This taxonomy serves two purposes. First, it allows structured, controlled comparison of model behavior across demographic subgroups—for example, assessing whether the face-parsing model consistently segments ear regions across different skin tones. Second, it enables evaluation of model robustness to domain shift, such as testing the scene segmentation model on paintings versus photographs.
+
+% ============================================================
+\section{Application to the ADRIAN Project}
+\label{sec:usecase}
+% ============================================================
+
+The ADRIAN (AI-based Detection of Retouched Images for Automated News) project at Bielefeld University of Applied Sciences and Arts investigates the automated detection of AI-manipulated face images in journalistic and social media contexts. A core challenge in this work is determining whether two images depict the same individual after one or both images have been subjected to generative editing—face swapping, inpainting, or attribute manipulation.
+
+Segmentation-based feature comparison is one approach explored within ADRIAN: by overlaying segmentation masks from two images of a candidate person and comparing the structural layout of facial regions, inconsistencies introduced by manipulation can surface as anomalous label distributions or mask boundary discontinuities.
+
+The platform described in this paper serves ADRIAN as a dedicated tool for (a) selecting the segmentation model most appropriate for the verification sub-task, (b) visually inspecting model predictions on pairs of images to identify failure modes, and (c) providing a reproducible evaluation environment that the broader team can access without local model installations. The categorized dataset is extended within ADRIAN to include controlled image pairs with known manipulation types, supporting systematic evaluation of segmentation robustness to various editing operations.
+
+% ============================================================
+\section{Discussion and Limitations}
+\label{sec:discussion}
+% ============================================================
+
+\subsection{Performance Considerations}
+
+Inference latency varies substantially across the three models and depends on hardware availability. The face-parsing model, executed via ONNX within the Node.js process, typically completes in under 2 seconds on a consumer CPU. The Python-based SegFormer models benefit from GPU acceleration when available; on CPU alone, inference for the 150-class ADE20K model can take 5--15 seconds for a 512$\times$512 image. The database caching layer mitigates this for repeated queries, but first-time processing of large image sets may require patience. Future work will benchmark all three models systematically and report mean inference times, memory usage, and throughput metrics.
+
+\subsection{Model Coverage}
+
+The current release integrates three models. While these cover face, clothing, and scene domains, important segmentation domains—medical imaging, satellite imagery, autonomous driving—are not yet represented. The extensible architecture was designed to make adding new models straightforward, and we intend to expand the model registry in subsequent releases.
+
+\subsection{Quantitative Evaluation}
+
+The platform currently focuses on qualitative, side-by-side visual comparison. It does not include ground-truth segmentation masks for the pre-loaded dataset and therefore cannot compute standard segmentation metrics such as mean Intersection over Union (mIoU) or per-class accuracy within the interface. Incorporating a ground-truth annotation mode is a planned enhancement that would transform the platform from a visualization tool into a full evaluation framework.
+
+\subsection{Scalability}
+
+SQLite is appropriate for single-user and small-team deployments but may become a bottleneck under concurrent multi-user load. Migrating the storage backend to PostgreSQL or a document store would be straightforward given the existing database abstraction layer. Similarly, the Python Flask server is a single-threaded development server; production deployment would require a WSGI server such as Gunicorn with multiple workers.
+
+% ============================================================
+\section{Conclusion}
+\label{sec:conclusion}
+% ============================================================
+
+We have presented a web-based platform for interactive, side-by-side comparison of semantic image segmentation models. The system integrates three transformer-based segmentation models spanning facial anatomy, clothing, and general scene understanding, and provides an intuitive canvas-based interface with real-time hover highlighting enabled by an efficient downscaled label map. A hierarchical image taxonomy supports structured evaluation across demographic and contextual variables, and a database caching layer ensures that inference results are reused across sessions.
+
+The platform has been applied within the ADRIAN project as a practical tool for segmentation model selection in AI-manipulated image detection research. It is publicly available and designed with extensibility as a first-class concern, requiring minimal effort to integrate additional models.
+
+By lowering the barrier to comparative segmentation evaluation—eliminating the need for local model installations and providing immediate visual feedback—the platform aims to accelerate the iterative model selection process in applied computer vision research. Future work will add ground-truth annotation support for quantitative mIoU evaluation, extend the model registry, and optimize inference throughput for production deployments.
+
+% ============================================================
+\section*{Acknowledgment}
+% ============================================================
+
+The authors gratefully acknowledge support from the Applied AI Working Group at Bielefeld University of Applied Sciences and Arts. This work is carried out in the context of the ADRIAN project.
+
+\printbibliography
+
+\end{document}

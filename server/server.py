@@ -3,6 +3,7 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 from apiEndpoints.mattmdjaga.model_handler import SegformerClothesModel
 from apiEndpoints.nvidia.segformer_ade_handler import SegformerADEModel
+import threading
 
 app = Flask(__name__)
 CORS(app)
@@ -10,6 +11,7 @@ CORS(app)
 # Initialize model handler
 model_handler = SegformerClothesModel("mattmdjaga/segformer_b2_clothes")
 ade_model_handler = SegformerADEModel("nvidia/segformer-b3-finetuned-ade-512-512")
+inference_lock = threading.Lock()  # PyTorch inference is not thread-safe
 
 @app.route('/mattmdjaga/segformer_b2_clothes/segment', methods=['POST'])
 def segment_image():
@@ -19,7 +21,8 @@ def segment_image():
             return jsonify({'error': 'Missing URL'}), 400
 
         url = content['url']
-        segments = model_handler.segment_image(url)
+        with inference_lock:
+            segments = model_handler.segment_image(url)
         return jsonify(segments)
 
     except Exception as e:
@@ -33,7 +36,8 @@ def segment_ade_image():
             return jsonify({'error': 'Missing URL'}), 400
 
         url = content['url']
-        segments = ade_model_handler.segment_image(url)
+        with inference_lock:
+            segments = ade_model_handler.segment_image(url)
         return jsonify(segments)
 
     except Exception as e:
@@ -42,4 +46,4 @@ def segment_ade_image():
 
 
 if __name__ == "__main__":
-    app.run(debug=True, host='0.0.0.0', port=6000)
+    app.run(debug=False, host='0.0.0.0', port=6000, threaded=True)

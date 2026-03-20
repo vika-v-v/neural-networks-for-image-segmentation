@@ -144,9 +144,38 @@ async function getRandomSegment(imgId) {
   });
 }
 
+async function fetchProcessedDataByUndercategory(undercategoryId) {
+  return new Promise((resolve, reject) => {
+    const query = `
+      SELECT pi.img_id, pi.nn_id, pi.lbl_name, pi.lbl_color, pi.score, pi.pimg_base64
+      FROM Processed_Image pi
+      JOIN Image_Undercateg iuc ON pi.img_id = iuc.img_id
+      WHERE iuc.undercateg_id = ?
+    `;
+    db.all(query, [undercategoryId], (err, rows) => {
+      if (err) { reject(err); return; }
+
+      // Group by imgId -> nnId -> [segments]
+      const result = {};
+      for (const row of rows) {
+        if (!result[row.img_id]) result[row.img_id] = {};
+        if (!result[row.img_id][row.nn_id]) result[row.img_id][row.nn_id] = [];
+        result[row.img_id][row.nn_id].push({
+          label: row.lbl_name,
+          color: row.lbl_color,
+          score: row.score,
+          base64: row.pimg_base64,
+        });
+      }
+      resolve(result);
+    });
+  });
+}
+
 module.exports = {
     deleteProcessedImageData,
     fetchProcessedData,
+    fetchProcessedDataByUndercategory,
     checkIfImageAlreadyProcessed,
     saveSegmentToDatabase,
     fetchImageUrlById,

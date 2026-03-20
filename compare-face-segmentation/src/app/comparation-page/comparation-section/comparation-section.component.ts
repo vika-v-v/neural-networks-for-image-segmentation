@@ -6,7 +6,7 @@ import { ImageInformationFormat } from '../image-information/image-information-f
 import { NNetworkService } from '../../server-communication/nnetwork.service';
 import { SegmentedImageComponent } from './segmented-image/segmented-image.component';
 import { CommonModule } from '@angular/common';
-import { Subscription } from 'rxjs';
+import { Subscription, forkJoin } from 'rxjs';
 import { ImageObserver, ImageObserverService } from '../../popups/add-image-popup/image-observer.service';
 import { PopupController } from '../../popups/popup-controller.service';
 
@@ -89,24 +89,27 @@ export class ComparationSectionComponent implements OnChanges, ImageObserver {
       }
 
       // the category wasn't selected before
-      this.imagesSubscription = this.imageService.getImages(this.currentUndercategoryId).subscribe({
-        next: (response) => {
+      this.imagesSubscription = forkJoin({
+        imagesResponse: this.imageService.getImages(this.currentUndercategoryId),
+        segmentsResponse: this.imageService.getSegmentsByUndercategory(this.currentUndercategoryId)
+      }).subscribe({
+        next: ({ imagesResponse, segmentsResponse }) => {
           this.undercategsWithCache.push(this.currentUndercategoryId);
 
           // Mark all images as not visible initially.
           this.images.forEach(image => {
             image.visible = false;
           });
-  
-          response.images.forEach((newImage: any) => {
+
+          imagesResponse.images.forEach((newImage: any) => {
             const existingImageIndex = this.images.findIndex(image => image.img_id === newImage.img_id);
             if (existingImageIndex !== -1) {
               // Mark the existing image as visible
               this.images[existingImageIndex].visible = true;
             } else {
-              // If the image is new, initialize its properties
+              // Attach pre-fetched segment data keyed by nnId
               newImage.visible = true;
-              newImage.processedData = [];
+              newImage.processedData = segmentsResponse[newImage.img_id] || {};
               newImage.undercategoryId = this.currentUndercategoryId;
               this.images.push(newImage);
             }

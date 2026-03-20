@@ -30,7 +30,19 @@ Now you need to run the python server, so:
 <li>Start your server with <code>python3 server.py</code></li>
 </ol>
 
-## 3. Run Frontend 
+## 3. Preload segments (optional, but recommended)
+
+Running this script pre-processes all images with all neural networks and caches the results in the database, so segments load instantly on the first page visit instead of being computed on demand.
+
+Prerequisites: the Python server must be running (see step 2) before running this script.
+
+<ol>
+<li>Open a new terminal and navigate to the server directory with <code>cd server</code>.</li>
+<li>Run <code>node preload.js</code></li>
+<li>Wait for the script to finish. It will skip images that are already cached, so it is safe to re-run whenever new images are added.</li>
+</ol>
+
+## 4. Run Frontend
 
 Prerequisites: you need to have Angular installed, use https://v17.angular.io/guide/setup-local to install.
 
