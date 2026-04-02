@@ -2,15 +2,15 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from apiEndpoints.mattmdjaga.model_handler import SegformerClothesModel
-from apiEndpoints.nvidia.segformer_ade_handler import SegformerADEModel
+from apiEndpoints.nvidia.mask2former_ade_handler import Mask2FormerADEModel
 import threading
 
 app = Flask(__name__)
 CORS(app)
 
 # Initialize model handler
-model_handler = SegformerClothesModel("mattmdjaga/segformer_b2_clothes")
-ade_model_handler = SegformerADEModel("nvidia/segformer-b3-finetuned-ade-512-512")
+model_handler = SegformerClothesModel("sayeed99/segformer_b3_clothes")
+ade_model_handler = Mask2FormerADEModel("facebook/mask2former-swin-large-ade-semantic")
 inference_lock = threading.Lock()  # PyTorch inference is not thread-safe
 
 @app.route('/mattmdjaga/segformer_b2_clothes/segment', methods=['POST'])

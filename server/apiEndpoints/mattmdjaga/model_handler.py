@@ -12,26 +12,17 @@ class SegformerClothesModel:
     def __init__(self, model_name):
         self.processor = SegformerImageProcessor.from_pretrained(model_name)
         self.model = AutoModelForSemanticSegmentation.from_pretrained(model_name)
-        self.label_descriptions = {
-            0: "Background",
-            1: "Hat",
-            2: "Hair",
-            3: "Sunglasses",
-            4: "Upper-clothes",
-            5: "Skirt",
-            6: "Pants",
-            7: "Dress",
-            8: "Belt",
-            9: "Left-shoe",
-            10: "Right-shoe",
-            11: "Face",
-            12: "Left-leg",
-            13: "Right-leg",
-            14: "Left-arm",
-            15: "Right-arm",
-            16: "Bag",
-            17: "Scarf"
-        }
+        # Use label map from model config if available, otherwise fall back to defaults
+        if hasattr(self.model.config, 'id2label') and self.model.config.id2label:
+            self.label_descriptions = {int(k): v for k, v in self.model.config.id2label.items()}
+        else:
+            self.label_descriptions = {
+                0: "Background", 1: "Hat", 2: "Hair", 3: "Sunglasses",
+                4: "Upper-clothes", 5: "Skirt", 6: "Pants", 7: "Dress",
+                8: "Belt", 9: "Left-shoe", 10: "Right-shoe", 11: "Face",
+                12: "Left-leg", 13: "Right-leg", 14: "Left-arm", 15: "Right-arm",
+                16: "Bag", 17: "Scarf"
+            }
 
     def rgb_to_hex(self, rgb):
         return f'#{int(rgb[0]):02x}{int(rgb[1]):02x}{int(rgb[2]):02x}'
