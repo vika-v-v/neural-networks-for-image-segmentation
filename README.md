@@ -1,7 +1,6 @@
 <h1>Neural Networks for Image Segmentation</h1>
 
-A web application for comparing various AI models for image segmentation to help select the most suitable model for specific purposes.<br><br>
-For more documentation, visit: <a src="https://app.readytensor.ai/publications/a_web-based_platform_for_comparing_neural_networks_in_image_segmentation_YpdmSXhmmrxI">https://app.readytensor.ai/publications/a_web-based_platform_for_comparing_neural_networks_in_image_segmentation_YpdmSXhmmrxI</a>.
+A web application for comparing various AI models for image segmentation to help select the most suitable model for specific purposes.<br>
 
 <br>
 <h2>Overview</h2>
